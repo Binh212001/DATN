@@ -1,0 +1,9 @@
+.active {
+  font-weight: bold;
+  color: #fff;
+  background-color: #712258;
+}
+
+.px-3 {
+  padding: 0 1.6rem;
+}

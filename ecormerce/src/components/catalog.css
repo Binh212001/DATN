@@ -1,0 +1,7 @@
+.catalog-item:hover span {
+  text-decoration: underline;
+}
+
+.catalog-item:hover .check-icon {
+  display: block;
+}
