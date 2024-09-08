@@ -1,9 +1,13 @@
 package org.example.yodybe.service;
 
+import jakarta.transaction.Transactional;
 import org.example.yodybe.dto.ColorDto;
 import org.example.yodybe.entity.Color;
+import org.example.yodybe.entity.Product;
+import org.example.yodybe.entity.Size;
 import org.example.yodybe.form.ColorForm;
 import org.example.yodybe.repositoties.ColorRepository;
+import org.example.yodybe.repositoties.ProductRepository;
 import org.example.yodybe.utils.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,8 @@ import java.util.stream.Collectors;
 public class ColorServiceImpl implements ColorService {
     @Autowired
     private ColorRepository colorRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public BaseResponse getAllColors() {
@@ -42,31 +48,40 @@ public class ColorServiceImpl implements ColorService {
     public BaseResponse saveColor(ColorForm color) {
         try {
             Color entity = mapToEntity(color);
-            colorRepository.save(entity);
-            return new BaseResponse("Lưu thành công", true, 200);
+            Color res =  colorRepository.save(entity);
+            return new BaseResponse("Lưu thành công", res, 200);
         } catch (Exception e) {
             return new BaseResponse("Lưu thất bại", true, 400);
         }
     }
 
+    @Transactional
     @Override
-    public BaseResponse deleteColor(Long id) {
+    public BaseResponse deleteColor(List<Long> ids) {
         try {
-            colorRepository.deleteById(id);
+            for (Long id : ids) {
+                Optional<Color> color = colorRepository.findById(id);
+                List<Product>  products = productRepository.findByColors(color.get());
+                if (!products.isEmpty()) {
+                    return new BaseResponse("Không thể xóa màu ["+color.get().getName()+"] đang có sản phẩm liên quan", true, 400);
+                }
+                colorRepository.deleteById(id);
+            }
             return new BaseResponse("Xóa thành công", true, 200);
         } catch (Exception e) {
-            return new BaseResponse("Xóa thất bại", true, 200);
+            return new BaseResponse("Size đã được gán cho sản phẩm. Hãy xóa sản phẩm trước.", true, 200);
         }
     }
 
     @Override
-    public BaseResponse updateColor(Long id, ColorForm clColorForm) {
+    public BaseResponse updateColor( ColorForm clColorForm) {
         try {
-            Optional<Color> color = colorRepository.findById(id);
+            Optional<Color> color = colorRepository.findById(clColorForm.getId());
             if (color.isEmpty()) {
                 return new BaseResponse("Không tìm thấy màu " + clColorForm.getName(), false, 4000);
             }
             color.get().setName(clColorForm.getName());
+            colorRepository.save(color.get());
             return new BaseResponse("Cập nhật thành công", true, 200);
         } catch (Exception e) {
             return new BaseResponse("Cập nhật thất bại ", true, 200);

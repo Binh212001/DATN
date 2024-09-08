@@ -41,10 +41,10 @@ const items = [
   {
     key: "5",
     label: (
-      <button>
+      <Link to={"/products"}>
         <HomeOutlined />
         Kho hàng
-      </button>
+      </Link>
     ),
   },
   {

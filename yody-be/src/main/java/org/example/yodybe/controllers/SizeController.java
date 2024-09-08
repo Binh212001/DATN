@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/sizes")
 public class SizeController {
@@ -32,8 +34,8 @@ public class SizeController {
     public ResponseEntity<BaseResponse> updateSize(@PathVariable Long id, @RequestBody SizeForm categoryDetails) {
         return ResponseEntity.ok(sizeService.updateSize(id, categoryDetails));
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> deleteSize(@PathVariable Long id) {
-        return ResponseEntity.ok(sizeService.deleteSize(id));
+    @DeleteMapping("")
+    public ResponseEntity<BaseResponse> deleteSize(@RequestBody List<Long> ids) {
+        return ResponseEntity.ok(sizeService.deleteSize(ids));
     }
 }

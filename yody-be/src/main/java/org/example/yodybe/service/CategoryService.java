@@ -6,6 +6,8 @@ import org.example.yodybe.entity.Category;
 import org.example.yodybe.form.CategoryForm;
 import org.example.yodybe.utils.BaseResponse;
 
+import java.util.List;
+
 public interface CategoryService {
     BaseResponse getAllCategorys();
 
@@ -13,7 +15,7 @@ public interface CategoryService {
 
     BaseResponse saveCategory(CategoryForm color);
 
-    BaseResponse deleteCategory(Long id);
+    BaseResponse deleteCategory(List<Long> ids);
 
     BaseResponse updateCategory(Long id, CategoryForm clCategoryForm);
 

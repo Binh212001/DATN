@@ -7,15 +7,15 @@ import lombok.Value;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link org.example.yodybe.entity.Color}
- */
 @Value
-public class CategoryForm implements Serializable {
-    Long id;
+public class UserForm implements Serializable {
     @NotNull
     @NotEmpty
     @NotBlank
-    String name;
-    String slug;
+    String username;
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    String password;
+    String fullName;
 }

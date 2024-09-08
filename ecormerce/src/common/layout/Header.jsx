@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.svg";
 
 import { Link, NavLink } from "react-router-dom";
@@ -8,9 +8,14 @@ import UserDropdown from "../../components/UserDropdown";
 import { MenuOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Drawer, Input, Modal } from "antd";
 import LoginForm from "../../components/LoginForm";
+import { useDispatch, useSelector } from "react-redux";
+import { getCatalogs } from "../../redux/catalogAtion";
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const { catalog } = useSelector((state) => state.catalog);
 
   const showDrawer = () => {
     setOpen(true);
@@ -30,6 +35,10 @@ function Header() {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    dispatch(getCatalogs());
+  }, [dispatch]);
 
   return (
     <div
@@ -67,28 +76,31 @@ function Header() {
           </div>
 
           <ul className=" justify-start items-center xs:hidden sm:hidden md:flex">
-            {routes.map((routes, index) => {
-              return (
-                <li
-                  key={index}
-                  style={{
-                    listStyle: "none",
-                    padding: 0,
-                  }}
-                >
-                  <NavLink
-                    className={({ isActive }) => (isActive ? "active" : "")}
-                    to={routes.path}
+            {catalog.map((c, index) => {
+              if (index < 7) {
+                return (
+                  <li
+                    key={index}
                     style={{
-                      display: "inline-block",
-                      height: "inherit",
-                      padding: "9px 10px",
+                      listStyle: "none",
+                      padding: 0,
                     }}
                   >
-                    {routes.linkName}
-                  </NavLink>
-                </li>
-              );
+                    <NavLink
+                      className={({ isActive }) => (isActive ? "active" : "")}
+                      to={`/catalog/${c.id}`}
+                      style={{
+                        display: "inline-block",
+                        height: "inherit",
+                        padding: "9px 10px",
+                      }}
+                    >
+                      {c.name}
+                    </NavLink>
+                  </li>
+                );
+              }
+              return null;
             })}
           </ul>
         </div>

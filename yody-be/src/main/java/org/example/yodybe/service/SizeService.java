@@ -6,6 +6,8 @@ import org.example.yodybe.entity.Size;
 import org.example.yodybe.form.SizeForm;
 import org.example.yodybe.utils.BaseResponse;
 
+import java.util.List;
+
 public interface SizeService {
     BaseResponse getAllSizes();
 
@@ -13,7 +15,7 @@ public interface SizeService {
 
     BaseResponse saveSize(SizeForm color);
 
-    BaseResponse deleteSize(Long id);
+    BaseResponse deleteSize(List<Long> ids);
 
     BaseResponse updateSize(Long id, SizeForm clSizeForm);
 

@@ -30,12 +30,12 @@ public class ColorController {
     public ResponseEntity<BaseResponse> createColor(@RequestBody ColorForm color) {
         return ResponseEntity.ok(colorService.saveColor(color));
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse> updateColor(@PathVariable Long id, @RequestBody ColorForm colorDetails) {
-        return ResponseEntity.ok(colorService.updateColor(id, colorDetails));
+    @PutMapping
+    public ResponseEntity<BaseResponse> updateColor( @RequestBody ColorForm colorDetails) {
+        return ResponseEntity.ok(colorService.updateColor(colorDetails));
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> deleteColor(@PathVariable Long id) {
-        return ResponseEntity.ok(colorService.deleteColor(id));
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> deleteColor(@RequestBody List<Long> ids) {
+        return ResponseEntity.ok(colorService.deleteColor(ids));
     }
 }

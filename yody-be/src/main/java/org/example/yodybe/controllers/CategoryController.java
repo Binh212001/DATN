@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
@@ -30,8 +32,8 @@ public class CategoryController {
     public ResponseEntity<BaseResponse> updateCategory(@PathVariable Long id, @RequestBody CategoryForm categoryDetails) {
         return ResponseEntity.ok(categoryService.updateCategory(id, categoryDetails));
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<BaseResponse> deleteCategory(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.deleteCategory(id));
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> deleteCategory(@RequestBody List<Long> ids) {
+        return ResponseEntity.ok(categoryService.deleteCategory(ids));
     }
 }

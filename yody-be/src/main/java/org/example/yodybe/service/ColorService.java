@@ -5,6 +5,8 @@ import org.example.yodybe.entity.Color;
 import org.example.yodybe.form.ColorForm;
 import org.example.yodybe.utils.BaseResponse;
 
+import java.util.List;
+
 public interface ColorService {
     BaseResponse getAllColors();
 
@@ -12,9 +14,9 @@ public interface ColorService {
 
     BaseResponse saveColor(ColorForm color);
 
-    BaseResponse deleteColor(Long id);
+    BaseResponse deleteColor(List<Long> ids);
 
-    BaseResponse updateColor(Long id, ColorForm clColorForm);
+    BaseResponse updateColor(ColorForm clColorForm);
 
     ColorDto createColorDto(Color color);
 
