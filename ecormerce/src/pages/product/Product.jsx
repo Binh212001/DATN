@@ -1,4 +1,15 @@
-import { Button, Dropdown, Form, Input, Modal, Pagination, Row, Select, Slider, Upload } from "antd";
+import {
+  Button,
+  Dropdown,
+  Form,
+  Input,
+  Modal,
+  Pagination,
+  Row,
+  Select,
+  Slider,
+  Upload,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import ProductKaban from "../../components/ProductKaban";
 import { SettingOutlined, UploadOutlined } from "@ant-design/icons";
@@ -8,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getColors } from "../../redux/colorAtion";
 import { getSizes } from "../../redux/sizeAtion";
 import { getCatalogs } from "../../redux/catalogAtion";
+import { getProducts } from "../../redux/productAction";
 
 const items = [
   {
@@ -40,12 +52,13 @@ const onChangeComplete = (value) => {
   console.log("onChangeComplete: ", value);
 };
 function Product() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-    const { sizes } = useSelector((state) => state.size);
-      const { colors } = useSelector((state) => state.color);
+  const { sizes } = useSelector((state) => state.size);
+  const { colors } = useSelector((state) => state.color);
   const { catalog } = useSelector((state) => state.catalog);
+  const { products } = useSelector((state) => state.product);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -59,8 +72,7 @@ function Product() {
     setIsModalVisible(false);
   };
 
-   const handleFinish = async (values) => {
-    console.log("🚀 ~ handleFinish ~ values:", values)
+  const handleFinish = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("description", values.description);
@@ -68,12 +80,14 @@ function Product() {
     formData.append("category", values.category);
     values.colors.forEach((colorId) => formData.append("colors", colorId));
     values.sizes.forEach((sizeId) => formData.append("sizes", sizeId));
-    values.images.fileList.forEach((file) => formData.append("images", file.originFileObj));
-    
+    values.images.fileList.forEach((file) =>
+      formData.append("images", file.originFileObj)
+    );
+
     try {
-      await BaseApi.post('/api/products', formData, {
+      await BaseApi.post("/api/products", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
       setIsModalVisible(false);
@@ -83,12 +97,13 @@ function Product() {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     dispatch(getColors());
-    dispatch(getSizes())
-    dispatch(getCatalogs())
+    dispatch(getSizes());
+    dispatch(getCatalogs());
+    dispatch(getProducts());
   }, [dispatch]);
-   
+
   return (
     <div className="container m-auto">
       <div className="flex gap-3">
@@ -108,52 +123,55 @@ function Product() {
         onCancel={handleCancel}
       >
         <Form form={form} onFinish={handleFinish} layout="vertical">
-          <Form.Item label="Product Name" name="name" rules={[{ required: true }]}>
+          <Form.Item
+            label="Product Name"
+            name="name"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Description" name="description" rules={[{ required: true }]}>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true }]}
+          >
             <Input.TextArea />
           </Form.Item>
           <Form.Item label="Price" name="price" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Category" name="category" rules={[{ required: true }]}>
+          <Form.Item
+            label="Category"
+            name="category"
+            rules={[{ required: true }]}
+          >
             <Select>
-              {
-                catalog.map((catalog) => (
-                  <Select.Option key={catalog.id} value={catalog.id}>
-                    {catalog.name}
-                  </Select.Option>
-                ))
-              }
+              {catalog.map((catalog) => (
+                <Select.Option key={catalog.id} value={catalog.id}>
+                  {catalog.name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item label="Colors" name="colors" rules={[{ required: true }]}>
             <Select mode="multiple">
-        {
-          colors.map((color) => (
-                  <Select.Option key={color.id} value={color.id}>
-                    {color.name}
-                  </Select.Option>
-                ))
-              }
+              {colors.map((color) => (
+                <Select.Option key={color.id} value={color.id}>
+                  {color.name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item label="Colors" name="colors" rules={[{ required: true }]}>
-            <Select mode="multiple">
-              {
-        }
-            </Select>
+            <Select mode="multiple">{}</Select>
           </Form.Item>
           <Form.Item label="Sizes" name="sizes" rules={[{ required: true }]}>
             <Select mode="multiple">
-              {
-                sizes.map((size) => (
-                  <Select.Option key={size.id} value={size.id}>
-                    {size.name}
-                  </Select.Option>
-                ))
-              }
+              {sizes.map((size) => (
+                <Select.Option key={size.id} value={size.id}>
+                  {size.name}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item label="Images" name="images" rules={[{ required: true }]}>
@@ -211,12 +229,9 @@ function Product() {
         <Button>Lọc</Button>
       </div>
       <Row gutter={[16, 16]} className="overflow-hidden">
-        <ProductKaban />
-        <ProductKaban />
-        <ProductKaban />
-        <ProductKaban />
-        <ProductKaban />
-        <ProductKaban />
+        {products.map((p) => {
+          return <ProductKaban item={p} key={p.id} />;
+        })}
       </Row>
       <br />
       <Pagination

@@ -5,6 +5,7 @@ import ColorConf from "../color/ColorConf";
 import Home from "../home/Home";
 import ProductItem from "../item/ProductItem";
 import Product from "../product/Product";
+import ProductDetail from "../product/ProductDetail";
 import SizeConf from "../size/SizeConf";
 import User from "../user/User";
 
@@ -15,6 +16,7 @@ const routes = [
   { path: "/cart", component: <Cart /> },
   { path: "/catalog/:id", component: <Catalog />, linkName: "Catalog" },
   { path: "/product/item/:id", component: <ProductItem /> },
+  { path: "/product/detail/:id", component: <ProductDetail /> },
   { path: "/product/config/catalog", component: <CatalogConf /> },
   { path: "/product/config/color", component: <ColorConf /> },
   { path: "/product/config/size", component: <SizeConf /> },

@@ -1,14 +1,12 @@
 package org.example.yodybe.dto;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import org.example.yodybe.entity.*;
+import org.example.yodybe.entity.Category;
+import org.example.yodybe.entity.Color;
+import org.example.yodybe.entity.Image;
+import org.example.yodybe.entity.Size;
 
 import java.io.Serializable;
 import java.util.List;
