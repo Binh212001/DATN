@@ -30,7 +30,7 @@ function CatalogConf() {
   const [categorySelector, setCategorySelector] = useState([]);
   const dispatch = useDispatch();
 
-  const { catalog } = useSelector((state) => state.color);
+  const { catalog } = useSelector((state) => state.catalog);
 
   //action
   const items = [
