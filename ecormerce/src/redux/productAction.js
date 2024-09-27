@@ -18,16 +18,11 @@ export const filterProduct = createAsyncThunk(
       if (price && price > 0) {
         data["price"] = price;
       }
-      data["categories"] = category;
-      data["categories"].push(parseInt(id));
+      data["categories"] = [parseInt(id), ...category];
       data["sizes"] = sizes;
       data["page"] = 0;
       data["size"] = 10;
-
-      console.log(data);
-
       const response = await BaseApi.post("/api/products/filter", data);
-      console.log("🚀 ~ response:", response);
       return response;
     } catch (e) {
       console.error(e);
@@ -39,10 +34,8 @@ export const filterProduct = createAsyncThunk(
 export const findByCatId = createAsyncThunk(
   "product/findByCatId",
   async (id, { rejectWithValue }) => {
-    console.log("🚀 ~ id:", id);
     try {
       const response = await BaseApi.get("/api/products/category/" + id);
-      console.log("🚀 ~ response:", response);
       return response;
     } catch (e) {
       console.error(e);

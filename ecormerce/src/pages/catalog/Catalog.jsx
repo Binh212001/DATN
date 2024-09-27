@@ -11,27 +11,34 @@ function Catalog() {
   const { products } = useSelector((state) => state.product);
   const [price, setPrice] = useState(5000000);
   const [category, setCategory] = useState([]);
-
   const [sizes, setSizes] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(findByCatId(id));
-  }, [id]);
-
-  // useEffect(() => {
-  //   dispatch(filterProduct({ price, category, sizes }));
-  // }, [dispatch, price, sizes, category]);
+    dispatch(filterProduct({ price, category, sizes, id }));
+  }, [dispatch, price, sizes, category, id]);
   const handleChangePrice = (p) => {
     setPrice(p);
   };
 
   const handleCategoryChange = (value) => {
-    setCategory((prev) => [...prev, parseInt(value)]);
+    if (category.includes(value)) {
+      const index = category.indexOf(value);
+      const cat = category.filter((c) => c !== category[index]);
+      setCategory(cat);
+    } else {
+      setCategory((prev) => [...prev, parseInt(value)]);
+    }
   };
 
   const handleSizeChange = (value) => {
-    setSizes(value);
+    if (sizes.includes(value)) {
+      const index = sizes.indexOf(value);
+      const sz = sizes.filter((c) => c !== sizes[index]);
+      setSizes(sz);
+    } else {
+      setSizes((prev) => [...prev, parseInt(value)]);
+    }
   };
 
   return (
@@ -39,6 +46,8 @@ function Catalog() {
       <Row gutter={[24, 24]}>
         <Col sx={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
           <Filter
+            category={category}
+            sz={sizes}
             handleCategoryChange={handleCategoryChange}
             handleSizeChange={handleSizeChange}
             handleChangePrice={handleChangePrice}

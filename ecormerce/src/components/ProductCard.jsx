@@ -24,6 +24,7 @@ function ProductCard({ xs, sm, md, lg, xl, xxl, item }) {
           <div className="flex  flex-wrap mt-2">
             {item.colors.map((c) => (
               <span
+                key={c.id}
                 className="size-7   rounded-full"
                 style={{
                   backgroundColor: c.name,

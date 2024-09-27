@@ -13,7 +13,7 @@ function ProductKaban({ item }) {
             <img
               className="h-20"
               src={`${BASEURL}${item.images[0]?.imageUrl}`}
-              alt=""
+              alt={item.images[0]?.imageUrl}
             />
             <div>
               <h3 className="font-bold">{item.name}</h3>

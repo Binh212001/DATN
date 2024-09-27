@@ -4,7 +4,13 @@ import PriceRange from "./PriceRange";
 import CatalogList from "./CatalogList";
 import SizeList from "./SizeList";
 
-function Filter({ handleCategoryChange, handleSizeChange, handleChangePrice }) {
+function Filter({
+  sz,
+  handleCategoryChange,
+  handleSizeChange,
+  handleChangePrice,
+  category,
+}) {
   const items = [
     {
       key: "1",
@@ -13,7 +19,12 @@ function Filter({ handleCategoryChange, handleSizeChange, handleChangePrice }) {
           DANH MỤC
         </Typography.Title>
       ),
-      children: <CatalogList handleCategoryChange={handleCategoryChange} />,
+      children: (
+        <CatalogList
+          category={category}
+          handleCategoryChange={handleCategoryChange}
+        />
+      ),
       showArrow: false,
     },
     {
@@ -33,7 +44,7 @@ function Filter({ handleCategoryChange, handleSizeChange, handleChangePrice }) {
           KÍCH THƯỚC
         </Typography.Title>
       ),
-      children: <SizeList handleSizeChange={handleSizeChange} />,
+      children: <SizeList handleSizeChange={handleSizeChange} sz={sz} />,
       showArrow: false,
     },
   ];
