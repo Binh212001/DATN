@@ -1,6 +1,8 @@
 import { Carousel, Row } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import ProductCard from "../../components/ProductCard";
+import { getProducts } from "../../redux/productAction";
+import { useDispatch, useSelector } from "react-redux";
 const contentStyle = {
   height: "160px",
   color: "#fff",
@@ -9,6 +11,14 @@ const contentStyle = {
   background: "#364d79",
 };
 function Home() {
+  const { products } = useSelector((state) => state.product);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch]);
+
   return (
     <div className="container m-auto">
       <div>
@@ -23,13 +33,21 @@ function Home() {
           Sản phẩm khuyến mãi
         </h4>
         <Row gutter={[24, 24]}>
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
+          {products &&
+            products.map((p) => {
+              return (
+                <ProductCard
+                  key={p.id}
+                  xs={24}
+                  sm={24}
+                  md={8}
+                  lg={6}
+                  xl={6}
+                  xxl={4}
+                  item={p}
+                />
+              );
+            })}
         </Row>
       </div>
 
@@ -38,13 +56,7 @@ function Home() {
           Sản phẩm mới
         </h4>
         <Row gutter={[24, 24]}>
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
-          <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} />
+          {/* <ProductCard xs={24} sm={24} md={8} lg={6} xl={6} xxl={4} /> */}
         </Row>
       </div>
     </div>

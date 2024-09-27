@@ -1,6 +1,7 @@
 import { Col, Tooltip } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
+import { BASEURL } from "../apis/BaseApi";
 
 function ProductKaban({ item }) {
   return (
@@ -11,13 +12,13 @@ function ProductKaban({ item }) {
             <p className="absolute "></p>
             <img
               className="h-20"
-              src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+              src={`${BASEURL}${item.images[0]?.imageUrl}`}
               alt=""
             />
             <div>
-              <h3 className="font-bold">San pHam</h3>
-              <p>Giá: 10000 đ</p>
-              <p>Số lượng: 1000</p>
+              <h3 className="font-bold">{item.name}</h3>
+              <p>Giá: {item.price} đ</p>
+              <p>Số lượng: {item.quantity}</p>
             </div>
           </div>
         </Tooltip>

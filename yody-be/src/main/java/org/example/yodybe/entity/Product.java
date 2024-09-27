@@ -20,6 +20,9 @@ public class Product {
     private String description;
     private Boolean gender;
     private Double price;
+    private Boolean status;
+    @Column(name = "quantity" , nullable = true)
+    private Integer quantity;
     @ManyToOne
     private Category categories;
     @ManyToMany
@@ -43,5 +46,10 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "size_id")
     )
     private List<Size> sizes;
+
+    @PrePersist
+    public void prePersist() {
+        this.status = true;
+    }
 
 }

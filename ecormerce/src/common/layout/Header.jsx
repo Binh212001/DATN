@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.svg";
 
 import { Link, NavLink } from "react-router-dom";
-import routes from "../../pages/routes";
 import "./header.css";
 import UserDropdown from "../../components/UserDropdown";
 import { MenuOutlined, SearchOutlined } from "@ant-design/icons";
@@ -10,6 +9,7 @@ import { Button, Drawer, Input, Modal } from "antd";
 import LoginForm from "../../components/LoginForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getCatalogs } from "../../redux/catalogAtion";
+import { getSizes } from "../../redux/sizeAtion";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -38,6 +38,7 @@ function Header() {
 
   useEffect(() => {
     dispatch(getCatalogs());
+    dispatch(getSizes());
   }, [dispatch]);
 
   return (

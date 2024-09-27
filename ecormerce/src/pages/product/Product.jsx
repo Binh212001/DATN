@@ -59,6 +59,11 @@ function Product() {
   const { colors } = useSelector((state) => state.color);
   const { catalog } = useSelector((state) => state.catalog);
   const { products } = useSelector((state) => state.product);
+  const [fileList, setFileList] = useState([]);
+
+  const handleFileChange = ({ fileList }) => {
+    setFileList(fileList);
+  };
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -77,12 +82,12 @@ function Product() {
     formData.append("name", values.name);
     formData.append("description", values.description);
     formData.append("price", values.price);
+    formData.append("gender", values.gender);
+    formData.append("quantity", values.quantity);
     formData.append("category", values.category);
     values.colors.forEach((colorId) => formData.append("colors", colorId));
     values.sizes.forEach((sizeId) => formData.append("sizes", sizeId));
-    values.images.fileList.forEach((file) =>
-      formData.append("images", file.originFileObj)
-    );
+    fileList.forEach((file) => formData.append("images", file.originFileObj));
 
     try {
       await BaseApi.post("/api/products", formData, {
@@ -106,7 +111,7 @@ function Product() {
 
   return (
     <div className="container m-auto">
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-3">
         <Button onClick={showModal}>Thêm sản phẩm</Button>
         <Dropdown
           menu={{
@@ -123,49 +128,56 @@ function Product() {
         onCancel={handleCancel}
       >
         <Form form={form} onFinish={handleFinish} layout="vertical">
-          <Form.Item
-            label="Product Name"
-            name="name"
-            rules={[{ required: true }]}
-          >
+          <Form.Item label="Tên" name="name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item
-            label="Description"
+            label="Mô tả"
             name="description"
             rules={[{ required: true }]}
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item label="Price" name="price" rules={[{ required: true }]}>
+          <Form.Item label="Giá" name="price" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item
-            label="Category"
-            name="category"
+            label="Số lượng"
+            name="quantity"
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Giới tính"
+            name="gender"
             rules={[{ required: true }]}
           >
             <Select>
-              {catalog.map((catalog) => (
-                <Select.Option key={catalog.id} value={catalog.id}>
-                  {catalog.name}
+              <Select.Option value={true}>Nam</Select.Option>
+              <Select.Option value={false}>Nữ</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Loại" name="category" rules={[{ required: true }]}>
+            <Select>
+              {catalog.map((c) => (
+                <Select.Option key={c.id} value={c.id}>
+                  {c.name}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Colors" name="colors" rules={[{ required: true }]}>
+          <Form.Item label="Màu sắc" name="colors" rules={[{ required: true }]}>
             <Select mode="multiple">
-              {colors.map((color) => (
-                <Select.Option key={color.id} value={color.id}>
-                  {color.name}
+              {colors.map((c) => (
+                <Select.Option key={c.id} value={c.id}>
+                  {c.name}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Colors" name="colors" rules={[{ required: true }]}>
-            <Select mode="multiple">{}</Select>
-          </Form.Item>
-          <Form.Item label="Sizes" name="sizes" rules={[{ required: true }]}>
+          <Form.Item label="Kích cỡ" name="sizes" rules={[{ required: true }]}>
             <Select mode="multiple">
               {sizes.map((size) => (
                 <Select.Option key={size.id} value={size.id}>
@@ -174,8 +186,13 @@ function Product() {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Images" name="images" rules={[{ required: true }]}>
-            <Upload multiple>
+          <Form.Item label="Ảnh" name="images" rules={[{ required: true }]}>
+            <Upload
+              fileList={fileList}
+              beforeUpload={() => false} // Prevent automatic upload
+              onChange={handleFileChange}
+              multiple
+            >
               <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </Form.Item>

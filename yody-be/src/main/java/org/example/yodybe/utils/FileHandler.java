@@ -27,12 +27,12 @@ public class FileHandler {
             // Save uploaded file to disk
             List<String> listFileName = new ArrayList<>();;
             for (MultipartFile f : file){
-            byte[] bytes = f.getBytes();
-            String fileName = UUID.randomUUID() +f.getOriginalFilename();
-            String urlPath = imagesDirectory +fileName;
-            Path path = Paths.get(urlPath);
-            Files.write(path, bytes);
-            listFileName.add(fileName);
+                byte[] bytes = f.getBytes();
+                String fileName = UUID.randomUUID() +f.getOriginalFilename();
+                String urlPath = imagesDirectory +fileName;
+                Path path = Paths.get(urlPath);
+                Files.write(path, bytes);
+                listFileName.add(fileName);
             }
             return listFileName;
         } catch (IOException e) {

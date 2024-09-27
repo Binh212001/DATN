@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createProduct,
+  filterProduct,
+  findByCatId,
   getProducts,
   removeProduct,
   updateProduct,
@@ -20,9 +22,24 @@ export const productSlice = createSlice({
     builder.addCase(getProducts.fulfilled, (state, { payload }) => {
       state.products = payload.data;
     });
-    // builder.addCase(getProducts.rejected, (state, action) => {
-    //   state.errorMessage = "Error loading Product";
-    // });
+    builder.addCase(getProducts.rejected, (state, action) => {
+      state.errorMessage = "Error loading Product";
+    });
+
+    //get
+    builder.addCase(filterProduct.fulfilled, (state, { payload }) => {
+      state.products = payload.data;
+    });
+    builder.addCase(filterProduct.rejected, (state, action) => {
+      state.errorMessage = "Error loading Product";
+    });
+    //get
+    builder.addCase(findByCatId.fulfilled, (state, { payload }) => {
+      state.products = payload.data;
+    });
+    builder.addCase(findByCatId.rejected, (state, action) => {
+      state.errorMessage = "Error loading Product";
+    });
     // //add
     // builder.addCase(createProduct.fulfilled, (state, { payload }) => {
     //   openNotification("Thêm danh mục", payload.message);

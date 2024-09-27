@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,4 +41,25 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findBySizes(Size size);
 
     List<Product> findByColors(Color color);
+
+
+    @Query("SELECT p FROM Product p WHERE "
+            + "(COALESCE(:sizes, NULL) IS NULL OR EXISTS (SELECT s FROM p.sizes s WHERE s.id IN :sizes)) AND "
+            + "(COALESCE(:categories, NULL) IS NULL OR p.categories IN :categories) AND "
+            + "(:price IS NULL OR p.price <= :price)")
+    List<Product> findProductsByFilter(
+            @Param("sizes") List<Long> sizes,
+            @Param("categories") List<Long> categories,
+            @Param("price") Double price,
+            Pageable pageable);
+
+    List<Product> findByCategoriesInAndSizesInAndPriceLessThan(List<Category> categories, List<Size> sizes, Double price, Pageable pageable);
+    List<Product> findByCategoriesInAndSizesIn(List<Category> categories, List<Size> sizes, Pageable pageable);
+    List<Product> findByCategoriesInAndPriceLessThan(List<Category> categories, Double price, Pageable pageable);
+    List<Product> findBySizesInAndPriceLessThan(List<Size> sizes, Double price, Pageable pageable);
+    List<Product> findByCategoriesIn(List<Category> categories, Pageable pageable);
+    List<Product> findBySizesIn(List<Size> sizes, Pageable pageable);
+    List<Product> findByPriceLessThan(Double price, Pageable pageable);
+
+    Page<Product> findByCategories(Category category, PageRequest of);
 }

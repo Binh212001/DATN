@@ -25,9 +25,11 @@ public class ProductForm {
     @NotEmpty
     @NotBlank
     private Double price;
+    private Integer quantity;
     private List<Long> categories;
     private List<Long> colors;
     private List<Long> sizes;
+    private Boolean status;
     private List<MultipartFile> images;
 
     public Product mapEntity(){

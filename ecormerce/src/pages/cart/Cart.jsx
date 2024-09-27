@@ -8,7 +8,7 @@ function Cart() {
         <div>
           <h1 className="text-2xl font-bold mb-4">Giỏ Hàng Của Bạn</h1>
           <button type="button" className="text-blue-500 hover:underline">
-            Hóa đơn
+            Đơn hàng
           </button>
         </div>
 

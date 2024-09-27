@@ -1,15 +1,12 @@
 import { Slider } from "antd";
 import React from "react";
 
-const onChange = (value) => {
-  console.log("onChange: ", value);
-};
+const onChange = (value) => {};
 
-const onChangeComplete = (value) => {
-  console.log("onChangeComplete: ", value);
-};
-
-function PriceRange() {
+function PriceRange({ handleChangePrice }) {
+  const onChangeComplete = (value) => {
+    handleChangePrice(value);
+  };
   return (
     <div>
       <Slider
