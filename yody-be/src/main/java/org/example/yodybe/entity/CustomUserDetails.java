@@ -8,17 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
     User user;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Mặc định mình sẽ để tất cả là ROLE_USER. Để demo cho đơn giản.
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-    }
+    private Collection<? extends GrantedAuthority> authorities;
+
 
     @Override
     public String getPassword() {
@@ -49,4 +47,11 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public static CustomUserDetails build(User user) {
+        return new CustomUserDetails(user,
+                Collections.singleton(new SimpleGrantedAuthority(String.valueOf(user.getRole())))
+        );
+    }
+
 }
