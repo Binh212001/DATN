@@ -58,10 +58,11 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/js/**", "/css/**", "/images/**", "api/user/login").permitAll()
-                        //good
-                        .requestMatchers("/api/products").hasAuthority("USER")
-                        .anyRequest().authenticated()
+                .requestMatchers("/js/**", "/css/**", "/images/**", "api/user/login").permitAll()
+                //good
+//                        .requestMatchers("/api/products").hasAuthority("USER")
+                .requestMatchers("/api/**").permitAll()
+                .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();

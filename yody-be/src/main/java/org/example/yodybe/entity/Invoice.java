@@ -7,26 +7,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cart {
+public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double totalPrice;
-    private Integer quantity;
+    private Double totalAmount;
     @ManyToOne
     private User user;
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private  Product product;
-    private  Boolean status;
-
+    @OneToMany
+    private List<Cart> invoiceItems;
+    @Enumerated(EnumType.STRING)
+    private  InvoiceStatus status;
     @PrePersist
-    public  void  onCreate() {
-        this.status = true;
+    public void prePersist() {
+        this.status = InvoiceStatus.PENDING;
     }
+
 }

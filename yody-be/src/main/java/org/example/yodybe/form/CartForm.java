@@ -1,7 +1,6 @@
 package org.example.yodybe.form;
 
 import lombok.Data;
-import lombok.Value;
 
 import java.io.Serializable;
 
@@ -10,8 +9,10 @@ import java.io.Serializable;
  */
 @Data
 public class CartForm implements Serializable {
-    Long id;
-    Double totalPrice;
-    Double price;
-    Integer quantity;
+    private Long id;
+    private Double totalPrice;
+    private Integer quantity;
+    private Long userId;
+    private Long productId;
+    private  Boolean status;
 }

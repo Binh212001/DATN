@@ -2,6 +2,8 @@ package org.example.yodybe.dto;
 
 import lombok.Data;
 import lombok.Value;
+import org.example.yodybe.entity.Product;
+import org.example.yodybe.entity.User;
 
 import java.io.Serializable;
 
@@ -12,8 +14,8 @@ import java.io.Serializable;
 public class CartDto implements Serializable {
     Long id;
     Double totalPrice;
-    Double price;
     Integer quantity;
-    UserDto user;
-    ProductDto product;
+    User user;
+    Product product;
+    private  Boolean status;
 }
