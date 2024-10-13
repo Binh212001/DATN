@@ -14,5 +14,7 @@ public class CartForm implements Serializable {
     private Integer quantity;
     private Long userId;
     private Long productId;
-    private  Boolean status;
+    private  String size;
+    private String color;
+    private Boolean status;
 }

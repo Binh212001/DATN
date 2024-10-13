@@ -10,73 +10,82 @@ import React from "react";
 import avatar from "../assets/images/default-avatar.png";
 import { Link } from "react-router-dom";
 
-const items = [
-  {
-    key: "1",
-    label: (
-      <Link to={"/user"}>
-        <UserOutlined />
-        Thông tin
-      </Link>
-    ),
-  },
-  {
-    key: "2",
-    label: (
-      <Link to={"/cart"}>
-        <ShoppingCartOutlined />
-        Giỏ hàng
-      </Link>
-    ),
-  },
-  {
-    key: "4",
-    label: (
-      <button>
-        <CarOutlined />
-        Ship
-      </button>
-    ),
-  },
-  {
-    key: "5",
-    label: (
-      <Link to={"/products"}>
-        <HomeOutlined />
-        Kho hàng
-      </Link>
-    ),
-  },
-  {
-    key: "3",
-    label: (
-      <button>
-        <LogoutOutlined /> Log out
-      </button>
-    ),
-  },
-];
-function UserDropdown() {
+function UserDropdown({ user }) {
+  const logout = () => {
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("user");
+    localStorage.removeItem("asscessToken");
+    window.location.href = "/";
+  };
+  const items = [
+    {
+      key: "1",
+      label: (
+        <Link to={"/user"}>
+          <UserOutlined />
+          Thông tin
+        </Link>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <Link to={"/cart"}>
+          <ShoppingCartOutlined />
+          Giỏ hàng
+        </Link>
+      ),
+    },
+    {
+      key: "4",
+      label: (
+        <button>
+          <CarOutlined />
+          Ship
+        </button>
+      ),
+    },
+    {
+      key: "5",
+      label: (
+        <Link to={"/products"}>
+          <HomeOutlined />
+          Kho hàng
+        </Link>
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <button onClick={() => logout()}>
+          <LogoutOutlined /> Log out
+        </button>
+      ),
+    },
+  ];
   return (
-    <Dropdown
-      menu={{
-        items,
-      }}
-    >
-      <Space>
-        <div>
-          <img
-            src={avatar}
-            alt="User"
-            height={30}
-            width={30}
-            style={{
-              borderRadius: "4px",
-            }}
-          />
-        </div>
-      </Space>
-    </Dropdown>
+    <div className="flex gap-2 items-center">
+      <p>{user.fullname}</p>
+      <Dropdown
+        menu={{
+          items,
+        }}
+      >
+        <Space>
+          <div>
+            <img
+              src={avatar}
+              alt="User"
+              height={30}
+              width={30}
+              style={{
+                borderRadius: "4px",
+              }}
+            />
+          </div>
+        </Space>
+      </Dropdown>
+    </div>
   );
 }
 

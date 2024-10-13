@@ -50,6 +50,8 @@ public class CartServiceImpl implements CartService {
             cart.setTotalPrice(cartForm.getTotalPrice());
             cart.setProduct(product);
             cart.setQuantity(cartForm.getQuantity());
+            cart.setSize(cartForm.getSize());
+            cart.setColor(cartForm.getColor());
             cartRepository.save(cart);
             return new BaseResponse("ok", cart, 201);
         } catch (Exception e) {
@@ -81,6 +83,8 @@ public class CartServiceImpl implements CartService {
         cartDto.setTotalPrice(cart.getTotalPrice());
         cartDto.setProduct(cart.getProduct());
         cartDto.setQuantity(cart.getQuantity());
+        cartDto.setSize(cart.getSize());
+        cartDto.setColor(cart.getColor());
         cartDto.setStatus(cart.getStatus());
         return cartDto;
     }

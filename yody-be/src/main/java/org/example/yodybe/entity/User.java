@@ -26,7 +26,7 @@ public class User {
     private Role role;
     private boolean active;
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
        Role role = Role.USER;
     }
 }

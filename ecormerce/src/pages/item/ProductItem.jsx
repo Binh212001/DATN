@@ -3,11 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { BaseApi, BASEURL } from "../../apis/BaseApi";
 import ProductCard from "../../components/ProductCard";
+import { openNotification } from "../catalog/CatalogConf";
 
 function ProductItem() {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [productRelative, setProductRelative] = useState([]);
+  const [size, setSize] = useState();
+  const [color, setColor] = useState();
   const [count, setCount] = useState(1);
   useEffect(() => {
     BaseApi.get(`/api/products/${id}`)
@@ -29,7 +32,22 @@ function ProductItem() {
       setCount(count - 1);
     }
   };
-  const addToCart = () => {};
+  const addToCart = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const res = await BaseApi.post(`/api/carts`, {
+        totalPrice: product.price,
+        quantity: count,
+        userId: user.id,
+        productId: product.id,
+        size: size,
+        color: color,
+      });
+      openNotification(res.message);
+    } catch (error) {
+      openNotification("That bai");
+    }
+  };
   return (
     <div className="container mx-auto bg-white p-6 rounded-lg">
       <h2 className="text-2xl font-semibold mb-4">Sản phẩm: {product?.name}</h2>
@@ -60,7 +78,7 @@ function ProductItem() {
               key={index}
               src={`${BASEURL}/images/${image.imageUrl}`}
               alt={`Image ${index + 1}`}
-              className="w-full h-40 object-cover rounded-md"
+              className={`w-full h-40 object-cover rounded-md`}
             />
           ))}
         </div>
@@ -68,13 +86,18 @@ function ProductItem() {
       <div className="mb-4">
         <h3 className="font-semibold mb-2">Màu sắc:</h3>
         <div className="flex space-x-4">
-          {product?.colors?.map((color, index) => (
+          {product?.colors?.map((c, index) => (
             <span
               key={index}
               style={{
-                backgroundColor: color.name,
+                backgroundColor: c.name,
               }}
-              className={`w-8 h-8 rounded-full inline-block`}
+              className={`w-8 h-8 rounded-full inline-block ${
+                color === c.name ? "border-2 border-main" : ""
+              }`}
+              onClick={() => {
+                setColor(c.name);
+              }}
             ></span>
           ))}
         </div>
@@ -82,9 +105,15 @@ function ProductItem() {
       <div>
         <h3 className="font-semibold mb-2">Kích cỡ:</h3>
         <div className="flex space-x-4">
-          {product?.sizes?.map((size, index) => (
-            <span key={index} className={`px-3 py-1 bg-gray-200 rounded-md}`}>
-              {size.name}
+          {product?.sizes?.map((s, index) => (
+            <span
+              key={index}
+              onClick={() => setSize(s.name)}
+              className={`px-3 py-1 bg-gray-200 rounded-md ${
+                size === s.name ? "border-2 border-main" : ""
+              }`}
+            >
+              {s.name}
             </span>
           ))}
         </div>

@@ -3,12 +3,14 @@ import catalogSlice from "./catalogSlice";
 import sizeSlice from "./sizeSlice";
 import colorSlice from "./colorSlice";
 import productSlice from "./productSilce";
+import cartSlice from "./cartSlice";
 
 const rootReducer = combineReducers({
   catalog: catalogSlice,
   size: sizeSlice,
   color: colorSlice,
   product: productSlice,
+  cart: cartSlice,
 });
 
 export const store = configureStore({

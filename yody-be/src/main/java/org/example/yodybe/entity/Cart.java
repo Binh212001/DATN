@@ -20,10 +20,11 @@ public class Cart {
     private Integer quantity;
     @ManyToOne
     private User user;
-    @OneToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne
     private  Product product;
     private  Boolean status;
+    private  String size;
+    private String color;
 
     @PrePersist
     public  void  onCreate() {

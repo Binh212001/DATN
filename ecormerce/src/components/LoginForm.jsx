@@ -1,14 +1,40 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import React, { useState } from "react";
-const onFinish = (values) => {
-  console.log("Success:", values);
-};
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
-function LoginForm() {
-  const [type, setType] = useState(true);
+import { BaseApi } from "../apis/BaseApi";
+import { openNotification } from "../pages/catalog/CatalogConf";
 
+function LoginForm({ setIsModalOpen }) {
+  const [type, setType] = useState(true);
+  const onFinish = async (data) => {
+    try {
+      if (type) {
+        // Sign in with email and password
+        const res = await BaseApi.post(`/api/user/login`, data);
+        if (res.token) {
+          localStorage.setItem("accessToken", res.token);
+          localStorage.setItem("user", JSON.stringify(res.user));
+          localStorage.setItem("isLogin", true);
+        }
+        openNotification("Đăng nhập thành công");
+        setIsModalOpen(false);
+      } else {
+        const res = await BaseApi.post(`/api/user/register`, data);
+        if (res.token) {
+          localStorage.setItem("accessToken", res.token);
+          localStorage.setItem("user", JSON.stringify(res.user));
+          localStorage.setItem("isLogin", true);
+        }
+        openNotification("Đăng ký thành công");
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      openNotification(error.response.data);
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
   return (
     <Form
       name="basic"
@@ -44,7 +70,7 @@ function LoginForm() {
       {!type && (
         <Form.Item
           label="Họ và tên"
-          name="name"
+          name="fullname"
           rules={[
             {
               required: true,

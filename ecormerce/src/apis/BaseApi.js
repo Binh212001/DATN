@@ -10,6 +10,10 @@ export const BaseApi = axios.create({
 });
 
 BaseApi.interceptors.request.use(async (config) => {
+  const token = localStorage.getItem("accessToken"); // Get token from localStorage
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`; // Add token to Authorization header
+  }
   return config;
 });
 BaseApi.interceptors.response.use(

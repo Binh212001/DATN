@@ -18,4 +18,6 @@ public class CartDto implements Serializable {
     User user;
     Product product;
     private  Boolean status;
+    private  String size;
+    private String color;
 }

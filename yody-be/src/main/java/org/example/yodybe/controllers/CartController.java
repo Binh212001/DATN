@@ -17,7 +17,7 @@ import java.util.List;
 public class CartController {
     @Autowired
     private CartService cartService;
-    @GetMapping("/{id}")
+    @GetMapping("/userId/{id}")
     public ResponseEntity<BaseResponse> getCartById(@PathVariable Long id) {
         return ResponseEntity.ok(cartService.getCartById(id));
     }

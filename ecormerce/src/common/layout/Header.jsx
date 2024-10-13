@@ -13,6 +13,8 @@ import { getSizes } from "../../redux/sizeAtion";
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState(null);
   const dispatch = useDispatch();
 
   const { catalog } = useSelector((state) => state.catalog);
@@ -40,6 +42,13 @@ function Header() {
     dispatch(getCatalogs());
     dispatch(getSizes());
   }, [dispatch]);
+
+  useEffect(() => {
+    const logined = localStorage.getItem("isLogin");
+    setIsLogin(logined);
+    const userObj = localStorage.getItem("user");
+    setUser(JSON.parse(userObj));
+  }, []);
 
   return (
     <div
@@ -110,21 +119,26 @@ function Header() {
             <Input placeholder="Tìm kiếm" className="block mr-2" />
             <SearchOutlined />
           </div>
-          <Button className="mr-4" onClick={showModal}>
-            Login
-          </Button>
-          <UserDropdown />
+          {isLogin ? (
+            <UserDropdown user={user} />
+          ) : (
+            <div>
+              <Modal
+                title="Đang nhập"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={null}
+              >
+                <LoginForm setIsModalOpen={setIsModalOpen} />
+              </Modal>
+              <Button className="mr-4" onClick={showModal}>
+                Đăng nhập
+              </Button>
+            </div>
+          )}
         </div>
       </nav>
-      <Modal
-        title="Đang nhập"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <LoginForm />
-      </Modal>
     </div>
   );
 }
