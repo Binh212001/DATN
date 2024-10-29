@@ -1,14 +1,17 @@
+import { Button, Input, Modal, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Input } from "antd";
-import { getCartById, updateCartItem } from "../../redux/cartAction";
+import { Link } from "react-router-dom";
 import { BASEURL } from "../../apis/BaseApi";
-
+import { getCartById, updateCartItem } from "../../redux/cartAction";
+import PaymentConfirm from "./PaymentConfirm";
 function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const [selectedItems, setSelectedItems] = useState({}); // State to track selected items
+  const [selectedItems, setSelectedItems] = useState([]); // State to track selected items
+  console.log("🚀 ~ Cart ~ selectedItems:", selectedItems);
   const [checkAll, setCheckAll] = useState(false); // State for "Check All" checkbox
+  const [method, setMethod] = useState("CASH"); // State for "
 
   // Fetch cart items on component mount
   useEffect(() => {
@@ -36,40 +39,46 @@ function Cart() {
   };
 
   // Handle checkbox change for individual items
-  const handleCheckboxChange = (itemId) => {
-    setSelectedItems((prev) => ({
-      ...prev,
-      [itemId]: !prev[itemId], // Toggle selection
-    }));
+  const handleCheckboxChange = (e, item) => {
+    if (e.target.checked) {
+      const newSelectedItems = [...selectedItems, item];
+      setSelectedItems(newSelectedItems);
+    } else {
+      const newSelectedItems = selectedItems.filter(
+        (selectedItem) => selectedItem.id !== item.id
+      );
+      setSelectedItems(newSelectedItems);
+    }
   };
-
   // Handle "Check All" checkbox change
   const handleCheckAllChange = () => {
-    setCheckAll((prev) => !prev);
-    const newSelectedItems = {};
-    cartItems.forEach((item) => {
-      newSelectedItems[item.id] = !checkAll; // Set to true if unchecking, false if checking
+    setCheckAll((prevCheckAll) => {
+      const newCheckAll = !prevCheckAll;
+      setSelectedItems(newCheckAll ? cartItems : []);
+      return newCheckAll;
     });
-    setSelectedItems(newSelectedItems); // Update selected items based on "Check All"
   };
 
   // Calculate total price based on selected items
-  const totalSelectedPrice = cartItems.reduce((total, item) => {
-    return selectedItems[item.id]
-      ? total + item.product.price * item.quantity
-      : total;
+  const totalSelectedPrice = selectedItems.reduce((total, item) => {
+    return total + item.totalPrice * 2;
   }, 0);
+  //
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 gap-4">
         <div>
           <h1 className="text-2xl font-bold mb-4">Giỏ Hàng Của Bạn</h1>
-          <button type="button" className="text-blue-500 hover:underline">
+          <Link
+            to={`/order/user/${user.id}`}
+            type="button"
+            className="text-blue-500 hover:underline"
+          >
             Đơn hàng
-          </button>
+          </Link>
         </div>
-
         <table className="min-w-full bg-white border align-middle">
           <thead>
             <tr className="w-full bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -97,9 +106,9 @@ function Cart() {
                 >
                   <td className="py-3 px-6 text-left">
                     <Input
+                      className="input-checkox"
                       type="checkbox"
-                      checked={!!selectedItems[item.id]} // Set checked state
-                      onChange={() => handleCheckboxChange(item.id)} // Handle checkbox change
+                      onChange={(e) => handleCheckboxChange(e, item)} // Handle checkbox change
                     />
                   </td>
                   <td className="py-3 px-6 text-left flex items-center">
@@ -145,14 +154,34 @@ function Cart() {
           </tbody>
         </table>
       </div>
-
+      <div>
+        <h2>Phương thức thanh toán</h2>
+        <Select
+          value={method} // Controlled selected value
+          onChange={(value) => setMethod(value)}
+          className="w-[300px]"
+        >
+          <Select.Option value="CASH">Thanh toán khi nhận hàng</Select.Option>
+          <Select.Option value="BANKING">Thanh toán Momo</Select.Option>
+        </Select>
+      </div>
       <div className="mt-6 border-t pt-4">
         <div className="flex justify-between text-lg font-semibold">
           <span>Tổng tiền:</span>
           <span>{totalSelectedPrice.toLocaleString()} VND</span>
           {/* Display total for selected items */}
         </div>
-        <button className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+
+        <button
+          className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          onClick={() => PaymentConfirm(selectedItems, method)}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.backgroundColor = "#1e40af")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.backgroundColor = "#1d4ed8")
+          }
+        >
           Thanh Toán
         </button>
       </div>

@@ -39,10 +39,10 @@ function UserDropdown({ user }) {
     {
       key: "4",
       label: (
-        <button>
+        <Link to={"/ship"}>
           <CarOutlined />
           Ship
-        </button>
+        </Link>
       ),
     },
     {

@@ -10,4 +10,6 @@ public interface InvoiceService {
     PaginationResponse getByUser(Integer page, Integer size, Long userId);
 
     BaseResponse save(InvoiceForm invoiceForm);
+
+    BaseResponse getInvoice(Long id);
 }

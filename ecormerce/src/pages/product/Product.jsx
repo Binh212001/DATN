@@ -34,6 +34,10 @@ const items = [
     key: "3",
     label: <Link to="/product/config/color">Màu sắc</Link>,
   },
+  {
+    key: "4",
+    label: <Link to="/order/list">Đơn hàng</Link>,
+  },
 ];
 
 const onShowSizeChange = (current, pageSize) => {

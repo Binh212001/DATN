@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/js/**", "/css/**", "/images/**", "api/user/login").permitAll()
                 //good
 //                        .requestMatchers("/api/products").hasAuthority("USER")
-                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

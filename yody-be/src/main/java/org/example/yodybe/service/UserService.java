@@ -84,11 +84,9 @@ public class UserService implements UserDetailsService {
             directory.mkdirs();
         }
 
-        // Define the path and file name
         String fileName = file.getOriginalFilename();
         File destinationFile = new File(directory, fileName);
 
-        // Copy the file to the destination
         file.transferTo(destinationFile);
 
         return  fileName; // Adjust based on your application's context

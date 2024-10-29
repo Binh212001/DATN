@@ -66,7 +66,20 @@ public class InvoiceServiceImpl implements InvoiceService{
             Invoice res = invoiceRepository.save(inv);
             return new BaseResponse("Lưu thành công", res, 200);
         } catch (Exception e) {
-            return new BaseResponse("Lưu thất bại", true, 400);
+            return new BaseResponse("Lưu thất bại", true, 500);
+        }
+    }
+
+    @Override
+    public BaseResponse getInvoice(Long id) {
+        try {
+            Invoice invoice = invoiceRepository.findById(id).orElseThrow(
+                    () -> new RuntimeException("Invoice not found")
+            );
+            return new BaseResponse("Invoice fetched successfully", mapToDto(invoice), 200);
+
+        }catch (Exception e)    {
+            return new BaseResponse("Error getting product", null, 500);
         }
     }
 
@@ -84,7 +97,9 @@ public class InvoiceServiceImpl implements InvoiceService{
         invoiceDto.setTotalAmount(invoice.getTotalAmount());
         invoiceDto.setUser(invoice.getUser());
         invoiceDto.setInvoiceItems(invoice.getInvoiceItems());
+        invoiceDto.setPayment(invoice.getPayment());
+        invoiceDto.setStatus(invoice.getStatus());
+        invoiceDto.setCreatedDate(invoice.getCreatedDate());
         return invoiceDto;
     }
-
 }

@@ -4,9 +4,12 @@ import lombok.Data;
 import lombok.Value;
 import org.example.yodybe.entity.Cart;
 import org.example.yodybe.entity.InvoiceStatus;
+import org.example.yodybe.entity.Payment;
 import org.example.yodybe.entity.User;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,4 +22,6 @@ public class InvoiceDto implements Serializable {
     User user;
     List<Cart> invoiceItems;
     InvoiceStatus status;
+    Payment payment;
+    Date createdDate;
 }

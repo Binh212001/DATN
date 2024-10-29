@@ -31,11 +31,16 @@ public class InvoiceController {
         return ResponseEntity.ok(paginationResponse);
     }
 
+    @GetMapping("/invoice")
+    public ResponseEntity<BaseResponse> getInvoice(
+            @RequestParam Long id
+    ) {
+        BaseResponse baseResponse = invoiceService.getInvoice(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponse> createInvoice(@RequestBody InvoiceForm invoiceForm) {
         return ResponseEntity.ok(invoiceService.save(invoiceForm));
     }
-
-
-
 }

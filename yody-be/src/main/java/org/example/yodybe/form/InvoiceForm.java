@@ -2,6 +2,7 @@ package org.example.yodybe.form;
 
 import lombok.Value;
 import org.example.yodybe.entity.InvoiceStatus;
+import org.example.yodybe.entity.Payment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,4 +17,5 @@ public class InvoiceForm implements Serializable {
     InvoiceStatus status;
     Long userId;
     List<Long> cartId ;
+    Payment payment;
 }

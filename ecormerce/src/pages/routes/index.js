@@ -4,8 +4,12 @@ import CatalogConf from "../catalog/CatalogConf";
 import ColorConf from "../color/ColorConf";
 import Home from "../home/Home";
 import ProductItem from "../item/ProductItem";
+import ListOrders from "../order/ListOrders";
+import Order from "../order/Order";
+import OrderInfo from "../order/OrderInfo";
 import Product from "../product/Product";
 import ProductDetail from "../product/ProductDetail";
+import ShipPage from "../Shipments/ShipPage";
 import SizeConf from "../size/SizeConf";
 import User from "../user/User";
 
@@ -14,6 +18,10 @@ const routes = [
   { path: "/products", component: <Product />, linkName: "Product" },
   { path: "/user", component: <User /> },
   { path: "/cart", component: <Cart /> },
+  { path: "/ship", component: <ShipPage /> },
+  { path: "/order/user/:id", component: <Order /> },
+  { path: "/order/list", component: <ListOrders /> },
+  { path: "/order/info/:id", component: <OrderInfo /> },
   { path: "/catalog/:id", component: <Catalog />, linkName: "Catalog" },
   { path: "/product/item/:id", component: <ProductItem /> },
   { path: "/product/detail/:id", component: <ProductDetail /> },
