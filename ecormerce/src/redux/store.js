@@ -4,6 +4,7 @@ import sizeSlice from "./sizeSlice";
 import colorSlice from "./colorSlice";
 import productSlice from "./productSilce";
 import cartSlice from "./cartSlice";
+import userSlice from "./userSlice";
 
 const rootReducer = combineReducers({
   catalog: catalogSlice,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   color: colorSlice,
   product: productSlice,
   cart: cartSlice,
+  user: userSlice,
 });
 
 export const store = configureStore({
