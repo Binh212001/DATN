@@ -6,7 +6,6 @@ import { BaseApi } from "../../apis/BaseApi";
 function OrderInfo() {
   const { id } = useParams();
   const [order, setOrder] = useState();
-  console.log("🚀 ~ OrderInfo ~ order:", order);
   useEffect(() => {
     async function getOrder(id) {
       try {

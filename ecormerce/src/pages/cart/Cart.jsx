@@ -9,7 +9,6 @@ function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
   const [selectedItems, setSelectedItems] = useState([]); // State to track selected items
-  console.log("🚀 ~ Cart ~ selectedItems:", selectedItems);
   const [checkAll, setCheckAll] = useState(false); // State for "Check All" checkbox
   const [method, setMethod] = useState("CASH"); // State for "
 
