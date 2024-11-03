@@ -4,6 +4,7 @@ package org.example.yodybe.controllers;
 import jakarta.validation.Valid;
 import org.example.yodybe.dto.UserUpdateDto;
 import org.example.yodybe.entity.CustomUserDetails;
+import org.example.yodybe.entity.Role;
 import org.example.yodybe.entity.User;
 import org.example.yodybe.form.LoginRequest;
 import org.example.yodybe.form.UserForm;
@@ -128,26 +129,34 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @ModelAttribute UserUpdateDto userUpdateDto) {
+    public ResponseEntity<String> updateUser(@PathVariable Long id,
+                                             @RequestParam String fullName,
+                                             @RequestParam String phone,
+                                             @RequestParam String addressDetail,
+                                             @RequestParam(required = false) MultipartFile avatar,
+                                             @RequestParam String district,
+                                             @RequestParam String province,
+                                             @RequestParam Role role,
+                                             @RequestParam Boolean active) {
         // Find the user by ID
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Update user fields
-        user.setFullName(userUpdateDto.getFullName());
-        user.setPhone(userUpdateDto.getPhone());
-        user.setAddressDetail(userUpdateDto.getAddressDetail());
-        user.setDistrict(userUpdateDto.getDistrict());
-        user.setProvince(userUpdateDto.getProvince());
-        user.setRole(userUpdateDto.getRole());
-        user.setActive(userUpdateDto.getActive());
+        user.setFullName(fullName);
+        user.setPhone(phone);
+        user.setAddressDetail(addressDetail);
+        user.setDistrict(district);
+        user.setProvince(province);
+        user.setRole(role);
+        user.setActive(active);
 
         // Handle avatar file upload
-        MultipartFile avatarFile = userUpdateDto.getAvatar();
-        if (avatarFile != null && !avatarFile.isEmpty()) {
+
+        if (avatar != null && !avatar.isEmpty()) {
             try {
                 // Save the file to the server
-                byte[] bytes = avatarFile.getBytes();
-                String fileName = UUID.randomUUID() +avatarFile.getOriginalFilename();
+                byte[] bytes = avatar.getBytes();
+                String fileName = UUID.randomUUID() +avatar.getOriginalFilename();
                 String urlPath = uploadDir +fileName;
                 Path path = Paths.get(urlPath);
                 Files.write(path, bytes);
@@ -157,9 +166,15 @@ public class UserController {
                 return ResponseEntity.status(500).body("Error uploading file: " + e.getMessage());
             }
         }
-
         // Save the updated user
         userRepository.save(user);
         return ResponseEntity.ok("User updated successfully");
+    }
+
+    @GetMapping("/{id}")
+    public  ResponseEntity getUser(@PathVariable Long id){
+        // Find the user by ID
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return ResponseEntity.ok(user);
     }
 }

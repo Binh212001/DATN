@@ -5,8 +5,6 @@ import { BaseApi } from "../../apis/BaseApi";
 function Order() {
   const { id } = useParams();
   const [order, setOrder] = useState([]);
-  console.log("🚀 ~ Order ~ order:", order);
-  // Lấy thông tin đơn hàng từ API hoặc dữ liệu m��u
   useEffect(() => {
     // API hoặc dữ liệu m��u
     async function callApi() {

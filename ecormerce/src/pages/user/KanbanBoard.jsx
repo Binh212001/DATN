@@ -3,12 +3,14 @@ import Search from "antd/es/transfer/search";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAll } from "../../redux/userAction";
+import { useNavigate } from "react-router-dom";
 
 const KanbanBoard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(80); // Number of users per page
+  const navigate = useNavigate();
   const onPageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
@@ -40,6 +42,7 @@ const KanbanBoard = () => {
         {users.map((user) => (
           <div
             key={user.id}
+            onClick={() => navigate("/user/" + user.id)}
             className="flex items-center p-4 bg-white shadow rounded-lg space-x-4"
           >
             {/* User Avatar */}

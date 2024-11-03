@@ -1,37 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const orderData = [
-  {
-    key: "1",
-    orderNumber: "1001",
-    customerName: "John Doe",
-    status: "Hoàn thành",
-    total: 199.99,
-  },
-  {
-    key: "2",
-    orderNumber: "1002",
-    customerName: "Jane Smith",
-    status: "Đang chờ",
-    total: 299.99,
-  },
-  {
-    key: "3",
-    orderNumber: "1003",
-    customerName: "Alice Brown",
-    status: "Đã giao",
-    total: 399.99,
-  },
-  // Thêm dữ liệu nếu cần
-];
+import { BaseApi } from "../../apis/BaseApi";
+import { Pagination } from "antd";
 
 const ListOrders = () => {
-  const [filteredData, setFilteredData] = useState(orderData);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const navigate = useNavigate();
 
+  const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(80); // Number of users per page
+  const [totalElements, setTotalElements] = useState(80); // Number of users per page
+  const onPageChange = (page, pageSize) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
+  };
+  useEffect(() => {
+    async function fetchOrder() {
+      const response = await BaseApi.get("/api/invoices", {
+        params: {
+          page: currentPage - 1,
+          size: pageSize,
+          // search: searchTerm,
+          // status: statusFilter,
+        },
+      });
+      setOrders(response.data);
+      setTotalElements(response.totalElements);
+    }
+    fetchOrder();
+  }, [currentPage, pageSize]);
   // Hàm tìm kiếm
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -47,26 +46,27 @@ const ListOrders = () => {
   };
 
   // Hàm lọc và tìm kiếm dữ liệu
-  const filterData = (searchValue, statusValue) => {
-    let result = orderData;
+  const filterData = (searchValue, statusValue) => {};
 
-    if (searchValue) {
-      result = result.filter((order) =>
-        order.customerName.toLowerCase().includes(searchValue)
-      );
-    }
-
-    if (statusValue) {
-      result = result.filter((order) => order.status === statusValue);
-    }
-
-    setFilteredData(result);
+  const reset = async () => {
+    setSearchTerm("");
+    setStatusFilter("");
+    const response = await BaseApi.get("/api/invoices", {
+      params: {
+        page: currentPage - 1,
+        size: pageSize,
+        // search: searchTerm,
+        // status: statusFilter,
+      },
+    });
+    setOrders(response.data);
+    setTotalElements(response.totalElements);
   };
-
   //Open Order
   const openOrder = (id) => {
     navigate("/order/info/1");
   };
+
   return (
     <div className="container mx-auto p-6">
       {/* Tìm kiếm và Lọc */}
@@ -94,10 +94,14 @@ const ListOrders = () => {
 
         {/* Nút đặt lại */}
         <button
+          onClick={() => {}}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
+        >
+          Lọc
+        </button>
+        <button
           onClick={() => {
-            setSearchTerm("");
-            setStatusFilter("");
-            setFilteredData(orderData);
+            reset();
           }}
           className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
         >
@@ -117,28 +121,39 @@ const ListOrders = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {filteredData.map((order) => (
+            {orders.map((order) => (
               <tr key={order.key} onClick={() => openOrder()}>
-                <td className="px-4 py-2">{order.orderNumber}</td>
-                <td className="px-4 py-2">{order.customerName}</td>
+                <td className="px-4 py-2">#{order?.id}</td>
+                <td className="px-4 py-2">{order?.user?.fullName}</td>
                 <td className="px-4 py-2">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${
-                      order.status === "Hoàn thành"
+                      order?.status === "Hoàn thành"
                         ? "bg-green-100 text-green-800"
-                        : order.status === "Đang chờ"
+                        : order?.status === "Đang chờ"
                         ? "bg-yellow-100 text-yellow-800"
                         : "bg-blue-100 text-blue-800"
                     }`}
                   >
-                    {order.status}
+                    {order?.status}
                   </span>
                 </td>
-                <td className="px-4 py-2">${order.total.toFixed(2)}</td>
+                <td className="px-4 py-2">${order?.totalAmount}</td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center">
+        <Pagination
+          className="mt-4 "
+          current={currentPage}
+          pageSize={pageSize}
+          total={totalElements}
+          showSizeChanger
+          onChange={onPageChange}
+          onShowSizeChange={onPageChange}
+        />
       </div>
     </div>
   );

@@ -30,10 +30,10 @@ function OrderInfo() {
         <div className="bg-white shadow-md rounded-lg p-6">
           <div className="mb-4">
             <h2 className="text-lg font-semibold text-gray-700">
-              Đơn hàng #{order.id}
+              Đơn hàng #{order?.id}
             </h2>
             <p className="text-sm text-gray-500">
-              Ngày đặt: {order.createdDate}
+              Ngày đặt: {order?.createdDate}
             </p>
           </div>
 
@@ -72,7 +72,7 @@ function OrderInfo() {
                 Trạng thái Đơn hàng
               </h3>
               <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                {order.status}
+                {order?.status}
               </span>
             </div>
 
@@ -81,7 +81,7 @@ function OrderInfo() {
                 Tổng số tiền
               </h3>
               <p className="text-xl font-bold text-gray-900">
-                {order.totalAmount} đ
+                {order?.totalAmount} đ
               </p>
             </div>
           </div>
@@ -114,7 +114,7 @@ function OrderInfo() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {order.invoiceItems.map((item) => {
+                {order?.invoiceItems.map((item) => {
                   return (
                     <tr>
                       <td className="px-4 py-2 text-sm text-gray-900">

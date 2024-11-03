@@ -12,13 +12,12 @@ import ProductDetail from "../product/ProductDetail";
 import ShipPage from "../Shipments/ShipPage";
 import SizeConf from "../size/SizeConf";
 import KanbanBoard from "../user/KanbanBoard";
-import User from "../user/User";
 import UserUpdateForm from "../user/UserUpdateForm";
 
 const routes = [
   { path: "/", component: <Home />, linkName: "Home" },
   { path: "/products", component: <Product />, linkName: "Product" },
-  { path: "/user", component: <User /> },
+  { path: "/user/:id", component: <UserUpdateForm /> },
   { path: "/cart", component: <Cart /> },
   { path: "/ship", component: <ShipPage /> },
   { path: "/order/user/:id", component: <Order /> },
@@ -31,7 +30,6 @@ const routes = [
   { path: "/product/config/color", component: <ColorConf /> },
   { path: "/product/config/size", component: <SizeConf /> },
   { path: "/user/kanban", component: <KanbanBoard /> },
-  { path: "/user/kanban/update/:id", component: <UserUpdateForm /> },
 ];
 
 export default routes;

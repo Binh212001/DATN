@@ -101,7 +101,7 @@ function Cart() {
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
                 <tr
-                  key={item.id}
+                  key={item?.id}
                   className="border-b border-gray-200 hover:bg-gray-100"
                 >
                   <td className="py-3 px-6 text-left">
@@ -117,10 +117,10 @@ function Cart() {
                       alt={item?.product?.name}
                       className="w-12 h-12 object-cover mr-4"
                     />
-                    <span>{item.product.name}</span>
+                    <span>{item?.product?.name}</span>
                   </td>
                   <td className="py-3 px-6 text-left">
-                    {item.product.price} VND
+                    {item?.product?.price} VND
                   </td>
                   <td className="py-3 px-6 text-center">
                     <Button onClick={() => handleDecreaseQuantity(item)}>
@@ -132,7 +132,7 @@ function Cart() {
                     </Button>
                   </td>
                   <td className="py-3 px-6 text-right">
-                    {item.product.price * item.quantity} VND
+                    {item?.product?.price * item?.quantity} VND
                   </td>
                   <td className="py-3 px-6 text-right">
                     <button

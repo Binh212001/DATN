@@ -1,5 +1,6 @@
 package org.example.yodybe.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,9 @@ public class Invoice {
     private Double totalAmount;
     @ManyToOne
     private User user;
+    @Nullable
+    @ManyToOne
+    private User shipper;
     @ManyToMany
     private List<Cart> invoiceItems;
     @Enumerated(EnumType.STRING)
