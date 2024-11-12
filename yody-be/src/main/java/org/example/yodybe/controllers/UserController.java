@@ -59,12 +59,7 @@ public class UserController {
                             loginRequest.getPassword()
                     )
             );
-
-            // Nếu không xảy ra exception tức là thông tin hợp lệ
-            // Set thông tin authentication vào Security Context
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            // Trả về jwt cho người dùng.
             String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
             String username = tokenProvider.getUsernameFromJWT(jwt);
             User user = userRepository.findByUsername(username);
@@ -77,8 +72,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity registerUser(@Valid @RequestBody UserForm userForm) {
-
-        // Kiểm tra username đã tồn tại chưa
         if (userRepository.existsByUsername(userForm.getUsername())) {
             return ResponseEntity.badRequest().body("Username is already taken!");
         }
@@ -96,7 +89,6 @@ public class UserController {
                         userForm.getPassword()
                 )
         );
-
         // Nếu không xảy ra exception tức là thông tin h��p lệ
         // Set thông tin authentication vào Security Context
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -138,10 +130,7 @@ public class UserController {
                                              @RequestParam String province,
                                              @RequestParam Role role,
                                              @RequestParam Boolean active) {
-        // Find the user by ID
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        // Update user fields
         user.setFullName(fullName);
         user.setPhone(phone);
         user.setAddressDetail(addressDetail);
@@ -176,5 +165,9 @@ public class UserController {
         // Find the user by ID
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return ResponseEntity.ok(user);
+    }
+    @GetMapping("/role/{role}")
+    public List<User> getUsersByRole(@PathVariable Role role) {
+        return userService.getUsersByRole(role);
     }
 }

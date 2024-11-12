@@ -24,4 +24,5 @@ public class InvoiceDto implements Serializable {
     InvoiceStatus status;
     Payment payment;
     Date createdDate;
+    User shipper;
 }

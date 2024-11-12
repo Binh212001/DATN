@@ -3,6 +3,7 @@ package org.example.yodybe.service;
 
 import jakarta.transaction.Transactional;
 import org.example.yodybe.entity.CustomUserDetails;
+import org.example.yodybe.entity.Role;
 import org.example.yodybe.entity.User;
 import org.example.yodybe.repositoties.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -89,6 +91,11 @@ public class UserService implements UserDetailsService {
 
         file.transferTo(destinationFile);
 
-        return  fileName; // Adjust based on your application's context
+        return fileName; // Adjust based on your application's context
+    }
+
+
+    public List<User> getUsersByRole(Role role) {
+        return userRepository.findByRole(role);
     }
 }

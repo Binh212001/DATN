@@ -1,54 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// Dữ liệu mẫu cho các đơn hàng giao hàng
-const orderData = [
-  {
-    key: "1",
-    orderNumber: "1001",
-    customerName: "John Doe",
-    address: "123 Main St, Springfield",
-    phone: "+1 234 567 890",
-    status: "Đang giao hàng",
-    estimatedDelivery: "2024-10-22",
-  },
-  {
-    key: "2",
-    orderNumber: "1002",
-    customerName: "Jane Smith",
-    address: "456 Oak St, Riverdale",
-    phone: "+1 345 678 901",
-    status: "Đã giao hàng",
-    estimatedDelivery: "2024-10-21",
-  },
-  {
-    key: "3",
-    orderNumber: "1003",
-    customerName: "Alice Brown",
-    address: "789 Pine St, Lakeview",
-    phone: "+1 456 789 012",
-    status: "Đang giao hàng",
-    estimatedDelivery: "2024-10-23",
-  },
-];
+import { BaseApi } from "../../apis/BaseApi";
 
 const ShipPage = () => {
-  const [filteredData, setFilteredData] = useState(orderData);
+  const [filteredData, setFilteredData] = useState([]);
+  console.log("🚀 ~ ShipPage ~ filteredData:", filteredData);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const { id } = JSON.parse(localStorage.getItem("user"));
 
   // Hàm tìm kiếm
-  const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase();
-    setSearchTerm(value);
-    const result = orderData.filter((order) =>
-      order.customerName.toLowerCase().includes(value)
-    );
-    setFilteredData(result);
-  };
+  const handleSearch = (e) => {};
+
+  useEffect(() => {
+    const getOrder = async () => {
+      const res = await BaseApi.get("/api/invoices/ship", {
+        params: {
+          status: "DELIVERED",
+          shipId: 2,
+          // customerName: searchTerm,
+        },
+      });
+      console.log("🚀 ~ getOrder ~ res:", res);
+      setFilteredData(res.data);
+    };
+    getOrder();
+  }, [searchTerm]);
 
   const openOrder = (id) => {
-    navigate("/order/info/1");
+    navigate("/order/info/" + id);
   };
 
   return (
@@ -82,10 +62,10 @@ const ShipPage = () => {
           <tbody className="divide-y divide-gray-200">
             {filteredData.map((order) => (
               <tr key={order.key} onClick={() => openOrder()}>
-                <td className="px-4 py-2">{order.orderNumber}</td>
-                <td className="px-4 py-2">{order.customerName}</td>
-                <td className="px-4 py-2">{order.address}</td>
-                <td className="px-4 py-2">{order.phone}</td>
+                <td className="px-4 py-2">#{order?.id}</td>
+                <td className="px-4 py-2">{order?.user?.fullName}</td>
+                <td className="px-4 py-2">{order?.user?.addressDetail}</td>
+                <td className="px-4 py-2">{order?.user?.phone}</td>
                 <td className="px-4 py-2">
                   <span
                     className={`px-2 py-1 rounded-full text-sm ${

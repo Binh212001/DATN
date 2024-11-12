@@ -55,6 +55,15 @@ function UserDropdown({ user }) {
       ),
     },
     {
+      key: "6",
+      label: (
+        <Link to={"/user/kanban"}>
+          <UserOutlined />
+          Người dùng
+        </Link>
+      ),
+    },
+    {
       key: "3",
       label: (
         <button onClick={() => logout()}>

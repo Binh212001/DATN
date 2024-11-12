@@ -35,14 +35,15 @@ function ProductItem() {
   const addToCart = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      const res = await BaseApi.post(`/api/carts`, {
+      const data = {
         totalPrice: product.price,
         quantity: count,
         userId: user.id,
         productId: product.id,
         size: size,
         color: color,
-      });
+      };
+      const res = await BaseApi.post(`/api/carts`, data);
       openNotification(res.message);
     } catch (error) {
       openNotification("That bai");

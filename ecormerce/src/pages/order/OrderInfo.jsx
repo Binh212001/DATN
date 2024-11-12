@@ -5,26 +5,79 @@ import { BaseApi } from "../../apis/BaseApi";
 
 function OrderInfo() {
   const { id } = useParams();
-  const [order, setOrder] = useState();
+  const [order, setOrder] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [shipper, setShipper] = useState([]);
+  const [shipperSelected, setShipperSelected] = useState(0);
+
   useEffect(() => {
     async function getOrder(id) {
       try {
         const response = await BaseApi.get(`/api/invoices/invoice`, {
           params: { id },
         });
+        const shipRes = await BaseApi.get("/api/user/role/SHIPPER");
+        setShipper(shipRes);
         setOrder(response.data);
+        setShipperSelected(response.data.shipper.id);
       } catch (err) {
         console.error(err);
       }
     }
     getOrder(id);
   }, [id]);
+
+  const action = async (status) => {
+    try {
+      await BaseApi.put(
+        `/api/invoices/invoice/${order?.id}/transfer/${shipperSelected}/status/${status}`
+      );
+      setOrder((prevOrder) => ({ ...prevOrder, status }));
+      alert("Đã thay đ��i vận chuyển!");
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div>
       <div className="container mx-auto">
         <h1 className="text-2xl font-bold mb-6 text-gray-800">
           Thông tin Đơn hàng
         </h1>
+        <div className="flex justify-between align-middle">
+          <div className="List-btn flex justify-start gap-2 align-middle">
+            {user?.role === "ADMIN" && (
+              <button
+                onClick={() => action("DELIVERED")}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Vận chuyển
+              </button>
+            )}
+            {user?.role === "SHIPPER" && order.status === "DELIVERED" && (
+              <div>
+                <button
+                  onClick={() => action("COMPLETED")}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Giao xong
+                </button>
+                <button
+                  onClick={() => action("RETURNED")}
+                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
+                  Giao xong
+                </button>
+              </div>
+            )}
+            <button
+              onClick={() => action("CANCELLED")}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Hủy đơn hàng
+            </button>
+          </div>
+        </div>
 
         <div className="bg-white shadow-md rounded-lg p-6">
           <div className="mb-4">
@@ -55,6 +108,32 @@ function OrderInfo() {
               <h3 className="text-md font-medium text-gray-700 mb-2">
                 Thông tin Vận chuyển
               </h3>
+              <p className="text-sm text-gray-900">123 Main St, Springfield</p>
+              <p className="text-sm text-gray-500">
+                Ngày dự kiến giao: 25-10-2024
+              </p>
+              <p className="text-sm text-gray-500">
+                Phương thức vận chuyển: Giao hàng tiêu chuẩn
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg shadow">
+              <h3 className="text-md font-medium text-gray-700 mb-2">
+                Thông tin Shipper
+              </h3>
+              <select
+                name="shipper"
+                value={shipperSelected}
+                disabled={user.role !== "ADMIN"}
+                onChange={(e) => setShipperSelected(e.target.value)}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value={0}></option>
+                {shipper.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.fullName}
+                  </option>
+                ))}
+              </select>
               <p className="text-sm text-gray-900">123 Main St, Springfield</p>
               <p className="text-sm text-gray-500">
                 Ngày dự kiến giao: 25-10-2024
@@ -115,7 +194,7 @@ function OrderInfo() {
               <tbody className="divide-y divide-gray-200">
                 {order?.invoiceItems.map((item) => {
                   return (
-                    <tr>
+                    <tr key={item.id}>
                       <td className="px-4 py-2 text-sm text-gray-900">
                         {item?.product?.name}
                       </td>

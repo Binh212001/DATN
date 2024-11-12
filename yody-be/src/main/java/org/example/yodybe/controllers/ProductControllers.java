@@ -80,7 +80,7 @@ public class ProductControllers {
             @RequestParam("price") Double price,
             @RequestParam(value = "gender", required = false) Boolean gender,
             @RequestParam("quantity") Integer quantity,
-            @RequestParam("status") Boolean status,
+            @RequestParam(value = "status" , required = false) Boolean status,
             @RequestParam("category") Long categoryId,
             @RequestParam("colors") List<Long> colorIds,
             @RequestParam("sizes") List<Long> sizeIds,
@@ -88,7 +88,6 @@ public class ProductControllers {
         BaseResponse savedProduct = productService.update(id, name, description, price, categoryId, colorIds, sizeIds, images, quantity, status, gender);
         return ResponseEntity.ok(savedProduct);
     }
-    // DELETE /products/{id}
 
     // GET /products?priceRange={minPrice}-{maxPrice}
     @GetMapping("/priceRange")

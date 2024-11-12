@@ -1,4 +1,5 @@
 package org.example.yodybe.controllers;
+import org.example.yodybe.entity.InvoiceStatus;
 import org.example.yodybe.form.CartForm;
 import org.example.yodybe.form.InvoiceForm;
 import org.example.yodybe.service.InvoiceService;
@@ -18,7 +19,19 @@ public class InvoiceController {
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "20") Integer size
     ) {
-        PaginationResponse paginationResponse = invoiceService.getAllInvoice(page, size);
+        PaginationResponse paginationResponse = invoiceService.getAllInvoice(page, size );
+        return ResponseEntity.ok(paginationResponse);
+    }
+    @GetMapping("/ship")
+    public ResponseEntity<PaginationResponse> getAllInvoice(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "limit", defaultValue = "20") Integer limit,
+            @RequestParam(required = false) Long shipperId,
+            @RequestParam(required = false) InvoiceStatus status,
+            @RequestParam(required = false) String customerName
+
+    ) {
+        PaginationResponse paginationResponse = invoiceService.getInvoiceShipper (page,limit, shipperId, status, customerName);
         return ResponseEntity.ok(paginationResponse);
     }
     @GetMapping("/user")
@@ -36,6 +49,16 @@ public class InvoiceController {
             @RequestParam Long id
     ) {
         BaseResponse baseResponse = invoiceService.getInvoice(id);
+        return ResponseEntity.ok(baseResponse);
+    }
+
+    @PutMapping("/invoice/{id}/transfer/{userId}/status/{status}")
+    public ResponseEntity<BaseResponse> transfer(
+            @PathVariable Long id,
+            @PathVariable Long userId,
+            @PathVariable InvoiceStatus status
+            ) {
+        BaseResponse baseResponse = invoiceService.transfer(id, userId, status);
         return ResponseEntity.ok(baseResponse);
     }
 
