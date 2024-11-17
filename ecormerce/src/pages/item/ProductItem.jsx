@@ -77,7 +77,7 @@ function ProductItem() {
           {product?.images?.map((image, index) => (
             <img
               key={index}
-              src={`${BASEURL}/images/${image.imageUrl}`}
+              src={`${BASEURL}images/${image.imageUrl}`}
               alt={`Image ${index + 1}`}
               className={`w-full h-40 object-cover rounded-md`}
             />

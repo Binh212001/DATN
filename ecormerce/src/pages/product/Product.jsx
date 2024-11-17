@@ -1,6 +1,6 @@
+import { UploadOutlined } from "@ant-design/icons";
 import {
   Button,
-  Dropdown,
   Form,
   Input,
   Modal,
@@ -11,34 +11,13 @@ import {
   Upload,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import ProductKaban from "../../components/ProductKaban";
-import { SettingOutlined, UploadOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { BaseApi } from "../../apis/BaseApi";
 import { useDispatch, useSelector } from "react-redux";
-import { getColors } from "../../redux/colorAtion";
-import { getSizes } from "../../redux/sizeAtion";
+import { BaseApi } from "../../apis/BaseApi";
+import ProductKaban from "../../components/ProductKaban";
 import { getCatalogs } from "../../redux/catalogAtion";
+import { getColors } from "../../redux/colorAtion";
 import { getProducts } from "../../redux/productAction";
-
-const items = [
-  {
-    key: "1",
-    label: <Link to="/product/config/catalog">Danh mục</Link>,
-  },
-  {
-    key: "2",
-    label: <Link to="/product/config/size">Kích cỡ</Link>,
-  },
-  {
-    key: "3",
-    label: <Link to="/product/config/color">Màu sắc</Link>,
-  },
-  {
-    key: "4",
-    label: <Link to="/order/list">Đơn hàng</Link>,
-  },
-];
+import { getSizes } from "../../redux/sizeAtion";
 
 const onShowSizeChange = (current, pageSize) => {
   console.log(current, pageSize);
@@ -117,13 +96,6 @@ function Product() {
     <div className="container m-auto">
       <div className="flex gap-3 mt-3">
         <Button onClick={showModal}>Thêm sản phẩm</Button>
-        <Dropdown
-          menu={{
-            items,
-          }}
-        >
-          <SettingOutlined />
-        </Dropdown>
       </div>
       <Modal
         title="Add New Product"

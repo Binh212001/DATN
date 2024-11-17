@@ -15,21 +15,34 @@ import KanbanBoard from "../user/KanbanBoard";
 import UserUpdateForm from "../user/UserUpdateForm";
 
 const routes = [
-  { path: "/", component: <Home />, linkName: "Home" },
-  { path: "/products", component: <Product />, linkName: "Product" },
-  { path: "/user/:id", component: <UserUpdateForm /> },
-  { path: "/cart", component: <Cart /> },
-  { path: "/ship", component: <ShipPage /> },
-  { path: "/order/user/:id", component: <Order /> },
-  { path: "/order/list", component: <ListOrders /> },
-  { path: "/order/info/:id", component: <OrderInfo /> },
+  { path: "/", component: <Home />, linkName: "Home", layout: "common" },
+  {
+    path: "/products",
+    component: <Product />,
+    linkName: "Product",
+    layout: "admin",
+  },
+  { path: "/user/:id", component: <UserUpdateForm />, layout: "common" },
+  { path: "/cart", component: <Cart />, layout: "common" },
+  { path: "/ship", component: <ShipPage />, layout: "common" },
+  { path: "/order/user/:id", component: <Order />, layout: "common" },
+  { path: "/order/list", component: <ListOrders />, layout: "admin" },
+  { path: "/order/info/:id", component: <OrderInfo />, layout: "common" },
   { path: "/catalog/:id", component: <Catalog />, linkName: "Catalog" },
-  { path: "/product/detail/:id", component: <ProductDetail /> },
-  { path: "/product/item/:id", component: <ProductItem /> },
-  { path: "/product/config/catalog", component: <CatalogConf /> },
-  { path: "/product/config/color", component: <ColorConf /> },
-  { path: "/product/config/size", component: <SizeConf /> },
-  { path: "/user/kanban", component: <KanbanBoard /> },
+  {
+    path: "/product/detail/:id",
+    component: <ProductDetail />,
+    layout: "common",
+  },
+  { path: "/product/item/:id", component: <ProductItem />, layout: "common" },
+  {
+    path: "/product/config/catalog",
+    component: <CatalogConf />,
+    layout: "admin",
+  },
+  { path: "/product/config/color", component: <ColorConf />, layout: "admin" },
+  { path: "/product/config/size", component: <SizeConf />, layout: "admin" },
+  { path: "/user/kanban", component: <KanbanBoard />, layout: "admin" },
 ];
 
 export default routes;

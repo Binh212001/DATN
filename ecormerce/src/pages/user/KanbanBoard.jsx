@@ -1,80 +1,222 @@
-import { Pagination } from "antd";
-import Search from "antd/es/transfer/search";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getAll } from "../../redux/userAction";
+import React, { useEffect, useRef, useState } from "react";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Space, Table } from "antd";
+import Highlighter from "react-highlight-words";
+import { BaseApi, BASEURL } from "../../apis/BaseApi";
 import { useNavigate } from "react-router-dom";
 
 const KanbanBoard = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const dispatch = useDispatch();
-  const [pageSize, setPageSize] = useState(80); // Number of users per page
+  const [searchText, setSearchText] = useState("");
+  const [data, setData] = useState([]);
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
   const navigate = useNavigate();
-  const onPageChange = (page, pageSize) => {
-    setCurrentPage(page);
-    setPageSize(pageSize);
-  };
+
   useEffect(() => {
-    dispatch(
-      getAll({
-        page: currentPage,
-        limit: pageSize,
-        searchTerm: searchTerm,
-      })
-    );
-  }, [pageSize, currentPage, searchTerm, dispatch]);
-  const { users, totalElements } = useSelector((state) => state.user);
+    async function fetchData() {
+      try {
+        const response = await BaseApi.get("/api/user");
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const handleRowClick = (record) => {
+    navigate(`/user/${record.id}`);
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    filterDropdownProps: {
+      onOpenChange(open) {
+        if (open) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Full Name",
+      dataIndex: "fullName",
+      key: "fullName",
+      ...getColumnSearchProps("fullName"),
+    },
+    {
+      title: "Address Detail",
+      dataIndex: "addressDetail",
+      key: "addressDetail",
+    },
+    {
+      title: "Avatar",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (url) =>
+        url ? (
+          <img
+            src={`${BASEURL}images/${url}`}
+            alt="Avatar"
+            style={{ width: 50 }}
+          />
+        ) : (
+          "No Avatar"
+        ),
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Province",
+      dataIndex: "province",
+      key: "province",
+    },
+    {
+      title: "District",
+      dataIndex: "district",
+      key: "district",
+    },
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+
+    {
+      title: "Active",
+      dataIndex: "active",
+      key: "active",
+      render: (text) => (text ? "Yes" : "No"),
+    },
+  ];
 
   return (
-    <div className="container m-auto p-4">
-      <div className="flex justify-end mb-3">
-        <Search
-          placeholder="Search users..."
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-auto mb-4"
-          enterButton
-        />
-      </div>
-
-      {/* User List Grid */}
-      <div className="grid grid-cols-4 gap-4">
-        {users.map((user) => (
-          <div
-            key={user.id}
-            onClick={() => navigate("/user/" + user.id)}
-            className="flex items-center p-4 bg-white shadow rounded-lg space-x-4"
-          >
-            {/* User Avatar */}
-            <img
-              src="https://st.quantrimang.com/photos/image/072015/22/avatar.jpg"
-              alt={user.fullName}
-              className="w-16 h-16 rounded-full"
-            />
-            {/* User Information */}
-            <div>
-              <div className="text-lg font-medium text-gray-800">
-                {user.fullName}
-              </div>
-              <div className="text-sm text-gray-500">Role:{user.role}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-      {/* Pagination Component */}
-      <div className="flex justify-center">
-        <Pagination
-          className="mt-4 "
-          current={currentPage}
-          pageSize={pageSize}
-          total={totalElements}
-          showSizeChanger
-          onChange={onPageChange}
-          onShowSizeChange={onPageChange}
-        />
-      </div>
-    </div>
+    <Table
+      columns={columns}
+      dataSource={data}
+      rowKey="id"
+      onRow={(record) => ({
+        onClick: () => handleRowClick(record),
+      })}
+    />
   );
 };
-
 export default KanbanBoard;

@@ -1,8 +1,12 @@
 package org.example.yodybe.config;
 
+import org.example.yodybe.entity.Role;
+import org.example.yodybe.entity.User;
+import org.example.yodybe.repositoties.UserRepository;
 import org.example.yodybe.service.JwtAuthenticationFilter;
 import org.example.yodybe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -112,7 +112,7 @@ function Cart() {
                   </td>
                   <td className="py-3 px-6 text-left flex items-center">
                     <img
-                      src={`${BASEURL}${item?.product?.images[0]?.imageUrl}`}
+                      src={`${BASEURL}images/${item?.product?.images[0]?.imageUrl}`}
                       alt={item?.product?.name}
                       className="w-12 h-12 object-cover mr-4"
                     />

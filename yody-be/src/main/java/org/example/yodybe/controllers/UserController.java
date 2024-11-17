@@ -11,6 +11,7 @@ import org.example.yodybe.form.UserForm;
 import org.example.yodybe.repositoties.UserRepository;
 import org.example.yodybe.service.JwtTokenProvider;
 import org.example.yodybe.service.UserService;
+import org.example.yodybe.utils.BaseResponse;
 import org.example.yodybe.utils.LoginResponse;
 import org.example.yodybe.utils.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,21 +80,16 @@ public class UserController {
         user.setUsername(userForm.getUsername());
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
         user.setFullName(userForm.getFullName());
-        // Tạo user mới và lưu vào database
         User newUser = userRepository.save(user);
 
-        // Xác thực từ username và password.
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         newUser.getUsername(),
                         userForm.getPassword()
                 )
         );
-        // Nếu không xảy ra exception tức là thông tin h��p lệ
-        // Set thông tin authentication vào Security Context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Trả về jwt cho người dùng.
         String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal());
         return ResponseEntity.ok(new LoginResponse(jwt, newUser));
     }
@@ -106,18 +102,15 @@ public class UserController {
     }
 
     @GetMapping
-    public PaginationResponse getAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                     @RequestParam(value = "limit", defaultValue = "20") Integer size,
-                                     @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm
+    public ResponseEntity<BaseResponse> getAll(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm
     ) {
-        Page<User> users;
+        List<User> users;
         if (searchTerm.isEmpty()) {
-            users = userRepository.findAll(PageRequest.of(page, size));
-            return paginationResponseHandler(users);
+            users = userRepository.findAll();
         } else {
-            users = userRepository.findByFullNameContains(searchTerm, PageRequest.of(page, size));
+            users = userRepository.findByFullNameContains(searchTerm);
         }
-        return paginationResponseHandler(users);
+        return ResponseEntity.ok(new BaseResponse("Get all user" ,users, 200));
     }
 
     @PutMapping("/{id}")
@@ -150,7 +143,7 @@ public class UserController {
                 Path path = Paths.get(urlPath);
                 Files.write(path, bytes);
                 // Store the file path or URL in the user entity
-                user.setAvatar(path.toString()); // Or store a relative path if needed
+                user.setAvatar(fileName); // Or store a relative path if needed
             } catch (Exception e) {
                 return ResponseEntity.status(500).body("Error uploading file: " + e.getMessage());
             }

@@ -4,6 +4,7 @@ import Home from "./pages/home/Home.jsx"; // eslint-disable-line
 import Product from "./pages/product/Product.jsx"; // eslint-disable-line
 import Layout from "./common/layout/Layout.jsx";
 import routes from "./pages/routes/index.js";
+import AdminLayout from "./common/layout/admin/AdminLayout.jsx";
 
 function App() {
   return (
@@ -11,11 +12,13 @@ function App() {
       <Router>
         <Routes>
           {routes.map((route, index) => {
+            let LAYOUT = Layout;
+            if (route.layout === "admin") LAYOUT = AdminLayout; // eslint-disable-line
             return (
               <Route
                 key={index}
                 path={route.path}
-                element={<Layout>{route.component}</Layout>}
+                element={<LAYOUT>{route.component}</LAYOUT>}
               />
             );
           })}

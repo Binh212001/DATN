@@ -11,6 +11,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
     boolean existsByUsername(String username);
-    Page<User> findByFullNameContains(String searchTerm, Pageable pageable);
+    List<User> findByFullNameContains(String searchTerm);
     List<User> findByRole(Role role);
 }

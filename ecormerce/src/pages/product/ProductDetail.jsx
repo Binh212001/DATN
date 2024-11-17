@@ -98,10 +98,10 @@ function ProductDetail() {
   }, [dispatch, id, form]);
   return (
     <div className="container m-auto mt-5">
-      <Row>
+      <Row gutter={[12, 12]}>
         <Col sx={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
           <div className="mb-5">
-            <img src={`${BASEURL}/images/${imgActive}`} alt="img" />
+            <img src={`${BASEURL}images/${imgActive}`} alt="img" />
           </div>
           <div>
             <Row gutter={[12, 12]}>
@@ -114,7 +114,7 @@ function ProductDetail() {
                   >
                     <img
                       className="w-full"
-                      src={`${BASEURL}/images/${image.imageUrl}`}
+                      src={`${BASEURL}images/${image.imageUrl}`}
                       alt="img"
                     />
                   </Col>

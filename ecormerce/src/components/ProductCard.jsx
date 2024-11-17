@@ -14,7 +14,7 @@ function ProductCard({ xs, sm, md, lg, xl, xxl, item }) {
           cover={
             <img
               alt="example"
-              src={`${BASEURL}/images/${
+              src={`${BASEURL}images/${
                 item.images.length > 0 ? item.images[0].imageUrl : ""
               }`}
             />
