@@ -18,7 +18,8 @@ function Order() {
     callApi();
   }, [id]);
 
-  const navigate = useNavigate(id);
+  const navigate = useNavigate();
+
   const openOrder = () => {
     navigate("/order/info/" + id);
   };

@@ -64,7 +64,7 @@ const ListOrders = () => {
   };
   //Open Order
   const openOrder = (id) => {
-    navigate("/order/info/1");
+    navigate("/order/info/" + id);
   };
 
   return (
@@ -122,21 +122,11 @@ const ListOrders = () => {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {orders.map((order) => (
-              <tr key={order.key} onClick={() => openOrder()}>
+              <tr key={order.id} onClick={() => openOrder(order.id)}>
                 <td className="px-4 py-2">#{order?.id}</td>
                 <td className="px-4 py-2">{order?.user?.fullName}</td>
                 <td className="px-4 py-2">
-                  <span
-                    className={`px-2 py-1 rounded-full text-sm ${
-                      order?.status === "Hoàn thành"
-                        ? "bg-green-100 text-green-800"
-                        : order?.status === "Đang chờ"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {order?.status}
-                  </span>
+                  <span>{order?.status}</span>
                 </td>
                 <td className="px-4 py-2">${order?.totalAmount}</td>
               </tr>

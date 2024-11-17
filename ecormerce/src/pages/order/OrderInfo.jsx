@@ -19,7 +19,7 @@ function OrderInfo() {
         const shipRes = await BaseApi.get("/api/user/role/SHIPPER");
         setShipper(shipRes);
         setOrder(response.data);
-        setShipperSelected(response.data.shipper.id);
+        setShipperSelected(response.data.shipper?.id);
       } catch (err) {
         console.error(err);
       }
@@ -30,10 +30,9 @@ function OrderInfo() {
   const action = async (status) => {
     try {
       await BaseApi.put(
-        `/api/invoices/invoice/${order?.id}/transfer/${shipperSelected}/status/${status}`
+        `/api/invoices/invoice/${id}/transfer/${shipperSelected}/status/${status}`
       );
       setOrder((prevOrder) => ({ ...prevOrder, status }));
-      alert("Đã thay đ��i vận chuyển!");
     } catch (err) {
       console.error(err);
     }
@@ -46,7 +45,7 @@ function OrderInfo() {
         </h1>
         <div className="flex justify-between align-middle">
           <div className="List-btn flex justify-start gap-2 align-middle">
-            {user?.role === "ADMIN" && (
+            {user?.role === "ADMIN" && order?.status === "PENDING" && (
               <button
                 onClick={() => action("DELIVERED")}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -54,19 +53,19 @@ function OrderInfo() {
                 Vận chuyển
               </button>
             )}
-            {user?.role === "SHIPPER" && order.status === "DELIVERED" && (
+            {user?.role === "SHIPPER" && order?.status === "DELIVERED" && (
               <div>
                 <button
                   onClick={() => action("COMPLETED")}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  className="px-4 py-2 bg-green-500 mr-3 text-white rounded hover:bg-green-600"
                 >
                   Giao xong
                 </button>
                 <button
                   onClick={() => action("RETURNED")}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                  className="px-4 py-2 bg-yellow-500-500 bg-yellow-500 rounded hover:bg-yellow-600"
                 >
-                  Giao xong
+                  Trả về
                 </button>
               </div>
             )}

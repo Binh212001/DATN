@@ -99,13 +99,11 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (!invoice.isPresent()) {
             return new BaseResponse("Invoice not found", null, 404);
         }
-        if (status == InvoiceStatus.PENDING) {
             Optional<User> ship = userRepository.findById(userId);
             if (!ship.isPresent()) {
                 return new BaseResponse("User not found", null, 404);
             }
             invoice.get().setShipper(ship.get());
-        }
 
         invoice.get().setStatus(status);
         invoiceRepository.save(invoice.get());

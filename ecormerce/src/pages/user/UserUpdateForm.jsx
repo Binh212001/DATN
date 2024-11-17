@@ -63,9 +63,12 @@ const UserUpdateForm = () => {
       if (key === "avatar" && formData.avatar) {
         updatedData.append(key, formData.avatar);
       } else {
-        updatedData.append(key, formData[key]);
+        if (key !== "role") {
+          updatedData.append(key, formData[key]);
+        }
       }
     }
+    updatedData.append("role", role);
 
     try {
       await BaseApi.put(`/api/user/${user.id}`, updatedData, {

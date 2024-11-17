@@ -1,0 +1,11 @@
+GET http://localhost:8080/api/products
+Authorization:Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTcyNzYyMzM3NywiZXhwIjoxNzI4MjI4MTc3fQ.VvRglwyGpHuPUf3OslLn3EqCByS6O0JOzRPdp12eCXwV-Nk1a_rgJPDNEoGrpVC5UEpFsOCJhgIxizlbatwvOw
+
+####
+POST http://localhost:8080/api/user/login
+Content-Type: application/json
+
+{
+    "username":"admin",
+    "password":"1"
+}

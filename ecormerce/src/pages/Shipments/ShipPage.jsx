@@ -4,7 +4,6 @@ import { BaseApi } from "../../apis/BaseApi";
 
 const ShipPage = () => {
   const [filteredData, setFilteredData] = useState([]);
-  console.log("🚀 ~ ShipPage ~ filteredData:", filteredData);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const { id } = JSON.parse(localStorage.getItem("user"));
@@ -17,7 +16,7 @@ const ShipPage = () => {
       const res = await BaseApi.get("/api/invoices/ship", {
         params: {
           status: "DELIVERED",
-          shipId: 2,
+          shipId: id,
           // customerName: searchTerm,
         },
       });
@@ -61,7 +60,7 @@ const ShipPage = () => {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {filteredData.map((order) => (
-              <tr key={order.key} onClick={() => openOrder()}>
+              <tr key={order.key} onClick={() => openOrder(order?.id)}>
                 <td className="px-4 py-2">#{order?.id}</td>
                 <td className="px-4 py-2">{order?.user?.fullName}</td>
                 <td className="px-4 py-2">{order?.user?.addressDetail}</td>
