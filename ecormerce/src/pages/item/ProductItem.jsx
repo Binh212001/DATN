@@ -35,6 +35,10 @@ function ProductItem() {
   const addToCart = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        openNotification("Vui lòng đăng nhập để mua hàng!");
+        return;
+      }
       const data = {
         totalPrice: product.price,
         quantity: count,
@@ -43,6 +47,7 @@ function ProductItem() {
         size: size,
         color: color,
       };
+
       const res = await BaseApi.post(`/api/carts`, data);
       openNotification(res.message);
     } catch (error) {
