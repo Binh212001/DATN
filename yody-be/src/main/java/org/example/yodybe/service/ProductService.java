@@ -10,10 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ProductService {
-    BaseResponse save(String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean gender);
+    BaseResponse save(String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean gender , Integer salePercentage);
 
-    PaginationResponse getProductList(Integer page, Integer size);
+    BaseResponse getProductList();
 
+     List<Product> getProductsOnSale();
     ProductDto mapToProductDto(Product product);
 
     BaseResponse getProductById(Long id);
@@ -25,12 +26,13 @@ public interface ProductService {
 
     PaginationResponse getProductsByPriceRange(String minPrice, String maxPrice, Integer page, Integer size);
 
-    BaseResponse update(Long id, String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean status, Boolean gender);
+    BaseResponse update(Long id, String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean status, Boolean gender, Integer salePercentage);
 
     BaseResponse stop(Long id);
 
-    BaseResponse getProductsByFilter(FilterForm filter);
+    PaginationResponse getProductsByFilter(FilterForm filter);
 
     PaginationResponse getProductsByCategory(Long id, Integer page, Integer size);
 
+    PaginationResponse searchProduct(String searchValue, int page, int limit);
 }

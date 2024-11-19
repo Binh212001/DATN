@@ -17,11 +17,12 @@ function UserDropdown({ user }) {
     localStorage.removeItem("asscessToken");
     window.location.href = "/";
   };
+  const { id, role } = JSON.parse(localStorage.getItem("user"));
   const items = [
     {
       key: "1",
       label: (
-        <Link to={"/user"}>
+        <Link to={"/user/" + id}>
           <UserOutlined />
           Thông tin
         </Link>
@@ -39,9 +40,16 @@ function UserDropdown({ user }) {
     {
       key: "4",
       label: (
-        <Link to={"/ship"}>
-          <CarOutlined />
-          Ship
+        <Link
+          to={"/ship"}
+          className={`${role === "SHIPPER" ? "hidden" : "d-block"}`}
+        >
+          {role === "SHIPPER" && (
+            <div>
+              <CarOutlined />
+              Ship
+            </div>
+          )}
         </Link>
       ),
     },
@@ -51,15 +59,6 @@ function UserDropdown({ user }) {
         <Link to={"/products"}>
           <HomeOutlined />
           Kho hàng
-        </Link>
-      ),
-    },
-    {
-      key: "6",
-      label: (
-        <Link to={"/user/kanban"}>
-          <UserOutlined />
-          Người dùng
         </Link>
       ),
     },

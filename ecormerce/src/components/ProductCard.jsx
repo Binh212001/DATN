@@ -20,7 +20,7 @@ function ProductCard({ xs, sm, md, lg, xl, xxl, item }) {
             />
           }
         >
-          <Meta title="Europe Street beat" />
+          <Meta title={item?.name} />
           <div className="flex  flex-wrap mt-2">
             {item.colors.map((c) => (
               <span
@@ -39,7 +39,7 @@ function ProductCard({ xs, sm, md, lg, xl, xxl, item }) {
             <span className="text-gray-500 font-bold">200 đã bán</span>
           </div>
           <span className="absolute bg-red-700 text-white font-bold top-2 right-2 px-1 rounded-full">
-            - 50%
+            {item.salePercentage}
           </span>
         </Card>
       </Link>

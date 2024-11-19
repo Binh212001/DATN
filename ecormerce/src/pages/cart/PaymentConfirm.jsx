@@ -19,7 +19,6 @@ const PaymentConfirm = (items, method) => {
         cartId: ids,
         payment: method,
       });
-      console.log("🚀 ~ onOk ~ res:", res);
       if (res.status === 200) {
         openNotification(
           "Thanh toan",

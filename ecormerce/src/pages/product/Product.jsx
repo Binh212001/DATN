@@ -1,39 +1,15 @@
-import { UploadOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  Pagination,
-  Row,
-  Select,
-  Slider,
-  Upload,
-} from "antd";
-import React, { useEffect, useState } from "react";
+import { SearchOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Select, Space, Table, Upload } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
 import { useDispatch, useSelector } from "react-redux";
-import { BaseApi } from "../../apis/BaseApi";
-import ProductKaban from "../../components/ProductKaban";
+import { BaseApi, BASEURL } from "../../apis/BaseApi";
 import { getCatalogs } from "../../redux/catalogAtion";
 import { getColors } from "../../redux/colorAtion";
 import { getProducts } from "../../redux/productAction";
 import { getSizes } from "../../redux/sizeAtion";
+import { useNavigate } from "react-router-dom";
 
-const onShowSizeChange = (current, pageSize) => {
-  console.log(current, pageSize);
-};
-
-const handleChange = (value) => {
-  console.log(`selected ${value}`);
-};
-
-const onChange = (value) => {
-  console.log("onChange: ", value);
-};
-
-const onChangeComplete = (value) => {
-  console.log("onChangeComplete: ", value);
-};
 function Product() {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -41,8 +17,12 @@ function Product() {
   const { sizes } = useSelector((state) => state.size);
   const { colors } = useSelector((state) => state.color);
   const { catalog } = useSelector((state) => state.catalog);
-  const { products } = useSelector((state) => state.product);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
   const [fileList, setFileList] = useState([]);
+  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
   const handleFileChange = ({ fileList }) => {
     setFileList(fileList);
@@ -60,6 +40,136 @@ function Product() {
     setIsModalVisible(false);
   };
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await BaseApi.get("/api/products");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+
+  const handleRowClick = (record) => {
+    navigate(`/product/detail/${record.id}`);
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    filterDropdownProps: {
+      onOpenChange(open) {
+        if (open) {
+          setTimeout(() => searchInput.current?.select(), 100);
+        }
+      },
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
   const handleFinish = async (values) => {
     const formData = new FormData();
     formData.append("name", values.name);
@@ -68,6 +178,7 @@ function Product() {
     formData.append("gender", values.gender);
     formData.append("quantity", values.quantity);
     formData.append("category", values.category);
+    formData.append("salePercentage", values.salePercentage && 0);
     values.colors.forEach((colorId) => formData.append("colors", colorId));
     values.sizes.forEach((sizeId) => formData.append("sizes", sizeId));
     fileList.forEach((file) => formData.append("images", file.originFileObj));
@@ -91,6 +202,61 @@ function Product() {
     dispatch(getCatalogs());
     dispatch(getProducts());
   }, [dispatch]);
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name"),
+    },
+    {
+      title: "price",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "status",
+      dataIndex: "status",
+      filters: [
+        {
+          text: "Active",
+          value: true,
+        },
+        {
+          text: "Unactive",
+          value: false,
+        },
+      ],
+      key: "status",
+    },
+
+    {
+      title: "Images",
+      dataIndex: "images",
+      key: "images",
+      render: (images) =>
+        images ? (
+          <img
+            src={`${BASEURL}images/${images[0].imageUrl}`}
+            alt="Avatar"
+            style={{ width: 50 }}
+          />
+        ) : (
+          "No Avatar"
+        ),
+    },
+  ];
 
   return (
     <div className="container m-auto">
@@ -122,6 +288,9 @@ function Product() {
             name="quantity"
             rules={[{ required: true }]}
           >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Giảm giá" name="salePercentage">
             <Input />
           </Form.Item>
 
@@ -175,63 +344,13 @@ function Product() {
         </Form>
       </Modal>
       <h4 className="text-center text-main font-bold text-xl m-3">Sản phẩm</h4>
-      <div className="filter flex justify-between items-center mb-3">
-        <div className="flex  items-center  gap-3">
-          <div>
-            <span>Danh mục: </span>
-            <Select
-              style={{
-                width: 120,
-              }}
-              onChange={handleChange}
-              options={[
-                {
-                  value: "jack",
-                  label: "Jack",
-                },
-              ]}
-            />
-          </div>
-          <div>
-            <span>Sắp xếp: </span>
-            <Select
-              style={{
-                width: 120,
-              }}
-              onChange={handleChange}
-              options={[
-                {
-                  value: "jack",
-                  label: "Jack",
-                },
-              ]}
-            />
-          </div>
-          <div className="flex  items-center gap-3 ">
-            <span>Giá: </span>
-            <Slider
-              className="w-[210px]"
-              defaultValue={0}
-              step={50000}
-              max={5000000}
-              onChange={onChange}
-              onChangeComplete={onChangeComplete}
-            />
-          </div>
-        </div>
-        <Button>Lọc</Button>
-      </div>
-      <Row gutter={[16, 16]} className="overflow-hidden">
-        {products.map((p) => {
-          return <ProductKaban item={p} key={p.id} />;
+      <Table
+        columns={columns}
+        dataSource={products}
+        rowKey="id"
+        onRow={(record) => ({
+          onClick: () => handleRowClick(record),
         })}
-      </Row>
-      <br />
-      <Pagination
-        showSizeChanger
-        onShowSizeChange={onShowSizeChange}
-        defaultCurrent={3}
-        total={500}
       />
     </div>
   );

@@ -53,7 +53,7 @@ public class CartServiceImpl implements CartService {
             cart.setSize(cartForm.getSize());
             cart.setColor(cartForm.getColor());
             cartRepository.save(cart);
-            return new BaseResponse("ok", cart, 201);
+            return new BaseResponse("Đã thêm vào giỏ hàng.", cart, 201);
         } catch (Exception e) {
             return new BaseResponse(e.getMessage(), null, 500);
         }

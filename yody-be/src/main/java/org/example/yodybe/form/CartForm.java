@@ -1,5 +1,6 @@
 package org.example.yodybe.form;
 
+import jakarta.annotation.Nullable;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class CartForm implements Serializable {
+    @Nullable
     private Long id;
     private Double totalPrice;
     private Integer quantity;

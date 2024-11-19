@@ -9,6 +9,7 @@ import Order from "../order/Order";
 import OrderInfo from "../order/OrderInfo";
 import Product from "../product/Product";
 import ProductDetail from "../product/ProductDetail";
+import ProductSearch from "../product/ProductSearch";
 import ShipPage from "../Shipments/ShipPage";
 import SizeConf from "../size/SizeConf";
 import KanbanBoard from "../user/KanbanBoard";
@@ -32,6 +33,11 @@ const routes = [
   {
     path: "/product/detail/:id",
     component: <ProductDetail />,
+    layout: "common",
+  },
+  {
+    path: "/product/search",
+    component: <ProductSearch />,
     layout: "common",
   },
   { path: "/product/item/:id", component: <ProductItem />, layout: "common" },

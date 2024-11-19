@@ -31,6 +31,7 @@ public class ProductForm {
     private List<Long> sizes;
     private Boolean status;
     private List<MultipartFile> images;
+    private Integer salePercentage;
 
     public Product mapEntity(){
         Product entity = new Product();
@@ -38,6 +39,8 @@ public class ProductForm {
         entity.setName(this.name);
         entity.setDescription(this.description);
         entity.setPrice(this.price);
+        entity.setQuantity(this.quantity);
+        entity.setSalePercentage(this.salePercentage);
         return entity;
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/images/logo.svg";
 
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "./header.css";
 import UserDropdown from "../../components/UserDropdown";
 import { MenuOutlined, SearchOutlined } from "@ant-design/icons";
@@ -15,6 +15,8 @@ function Header() {
   const [open, setOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { catalog } = useSelector((state) => state.catalog);
@@ -116,8 +118,18 @@ function Header() {
         </div>
         <div className="flex ">
           <div className="flex mr-4">
-            <Input placeholder="Tìm kiếm" className="block mr-2" />
-            <SearchOutlined />
+            <Input
+              placeholder="Tìm kiếm"
+              className="block mr-2"
+              onChange={(e) => {
+                setSearchValue(e.target.value);
+              }}
+            />
+            <SearchOutlined
+              onClick={() => {
+                navigate(`/product/search?q=${searchValue}`);
+              }}
+            />
           </div>
           {isLogin ? (
             <UserDropdown user={user} />

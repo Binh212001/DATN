@@ -9,6 +9,18 @@ export const getProducts = createAsyncThunk("product/getProducts", async () => {
     console.log(e);
   }
 });
+
+export const getProductSale = createAsyncThunk(
+  "product/getProductSale",
+  async () => {
+    try {
+      const response = await BaseApi.get("/api/products/on-sale");
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
 export const filterProduct = createAsyncThunk(
   "product/filterProduct",
   async ({ price, category, sizes, id }, { rejectWithValue }) => {

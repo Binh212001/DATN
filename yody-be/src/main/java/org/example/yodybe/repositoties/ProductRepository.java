@@ -7,6 +7,7 @@ import org.example.yodybe.entity.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +19,10 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product  p  ")
     Page<Product> getProductList(Pageable pageable);
+
     @Query("select p from Product  p  where p.categories.id = :categoryId")
-    Page<Product> getProductListByCategory(Pageable pageable , Long categoryId);
+    Page<Product> getProductListByCategory(Pageable pageable, Long categoryId);
+
     Page<Product> findByColorsOrSizesOrGender(Color color, Size size, Boolean gender, Pageable pageable);
 
     Page<Product> findByColors(Color color, Pageable pageable);
@@ -36,11 +39,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByColorsOrGender(Color color, Boolean gender, Pageable pageable);
 
-    Page<Product> findBySizesOrGender(Size size, Boolean gender,  Pageable pageable);
+    Page<Product> findBySizesOrGender(Size size, Boolean gender, Pageable pageable);
 
     List<Product> findBySizes(Size size);
 
     List<Product> findByColors(Color color);
+
+    List<Product> findAllByOrderByCreatedAtAsc();
 
 
     @Query("SELECT p FROM Product p WHERE "
@@ -54,12 +59,24 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             Pageable pageable);
 
     List<Product> findByCategoriesInAndSizesInAndPriceLessThan(List<Category> categories, List<Size> sizes, Double price, Pageable pageable);
+
     List<Product> findByCategoriesInAndSizesIn(List<Category> categories, List<Size> sizes, Pageable pageable);
+
     List<Product> findByCategoriesInAndPriceLessThan(List<Category> categories, Double price, Pageable pageable);
+
     List<Product> findBySizesInAndPriceLessThan(List<Size> sizes, Double price, Pageable pageable);
+
     List<Product> findByCategoriesIn(List<Category> categories, Pageable pageable);
+
     List<Product> findBySizesIn(List<Size> sizes, Pageable pageable);
+
     List<Product> findByPriceLessThan(Double price, Pageable pageable);
 
-    Page<Product> findByCategories(Category category, PageRequest of);
+    Page<Product> findByCategories(Category category, Pageable pageable);
+
+    List<Product> findBySalePercentageGreaterThan(Integer salePercentage);
+
+    Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Page<Product> findAll(Specification<Product> spec, Pageable pageable);
 }

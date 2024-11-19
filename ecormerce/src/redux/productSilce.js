@@ -1,8 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { filterProduct, findByCatId, getProducts } from "./productAction";
+import {
+  filterProduct,
+  findByCatId,
+  getProducts,
+  getProductSale,
+} from "./productAction";
 
 const initialState = {
   products: [],
+  currentPage: 1,
+  totalPages: 1,
+  totalElements: 1,
+  productsSale: [],
   errorMessage: "",
 };
 
@@ -18,10 +27,20 @@ export const productSlice = createSlice({
     builder.addCase(getProducts.rejected, (state, action) => {
       state.errorMessage = "Error loading Product";
     });
+    //get
+    builder.addCase(getProductSale.fulfilled, (state, { payload }) => {
+      state.productsSale = payload;
+    });
+    builder.addCase(getProductSale.rejected, (state, action) => {
+      state.errorMessage = "Error loading Product";
+    });
 
     //get
     builder.addCase(filterProduct.fulfilled, (state, { payload }) => {
       state.products = payload.data;
+      state.currentPage = payload.currentPage;
+      state.totalPages = payload.totalPages;
+      state.totalElements = payload.totalElements;
     });
     builder.addCase(filterProduct.rejected, (state, action) => {
       state.errorMessage = "Error loading Product";

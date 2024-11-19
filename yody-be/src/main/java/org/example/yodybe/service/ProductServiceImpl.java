@@ -11,12 +11,15 @@ import org.example.yodybe.utils.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -40,9 +43,12 @@ public class ProductServiceImpl implements ProductService {
     ProductImageRepository productImageRepository;
 
 
+    public List<Product> getProductsOnSale() {
+        return productRepository.findBySalePercentageGreaterThan(0);
+    }
     @Transactional
     @Override
-    public BaseResponse save(String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean gender) {
+    public BaseResponse save(String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean gender, Integer salePercentage) {
         try {
             Product entity = new Product();
             entity.setName(name);
@@ -50,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
             entity.setPrice(price);
             entity.setGender(gender);
             entity.setQuantity(quantity);
+            entity.setSalePercentage(salePercentage);
             Optional<Category> category = categoryRepository.findById(categoryId);
             if (category.isEmpty()) {
                 return new BaseResponse("Category is not found", null, 400);
@@ -94,12 +101,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PaginationResponse getProductList(Integer page, Integer size) {
+    public BaseResponse getProductList() {
         try {
-            Page<Product> productPage = productRepository.getProductList(PageRequest.of(page, size));
-            return paginationResponseHandler(productPage);
+            List<Product> res = productRepository.findAll();
+            return new BaseResponse("Product list", res, 200);
         } catch (Exception e) {
-            return new PaginationResponse("Error getting product list", null, 500, 0, 0, 0);
+            return new BaseResponse("Error saving product list",null, 500);
         }
     }
 
@@ -201,7 +208,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public BaseResponse update(Long id, String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean status, Boolean gender) {
+    public BaseResponse update(Long id, String name, String description, Double price, Long categoryId, List<Long> colorIds, List<Long> sizeIds, List<MultipartFile> images, Integer quantity, Boolean status, Boolean gender , Integer salePercentage) {
         try {
             Optional<Product> entity = productRepository.findById(id);
             if (!entity.isPresent()) {
@@ -209,6 +216,7 @@ public class ProductServiceImpl implements ProductService {
             }
             entity.get().setName(name);
             entity.get().setDescription(description);
+            entity.get().setSalePercentage(salePercentage);
             entity.get().setPrice(price);
             entity.get().setGender(gender);
             entity.get().setQuantity(quantity);
@@ -273,55 +281,23 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    public BaseResponse getProductsByFilter(FilterForm filter) {
+    public PaginationResponse getProductsByFilter(FilterForm filter) {
         try {
-            List<Category> categories = categoryRepository.findAllById(filter.getCategories());
-            List<Size> sizes = new ArrayList<>();
-                if (filter.getSizes() != null) {
-                sizes.addAll(sizeRepository.findAllById(filter.getSizes()));
-            }
+            // Chuyển các tham số tìm kiếm thành Specifications
+            Specification<Product> spec = Specification.where(ProductSpecifications.hasCategories(categoryRepository.findAllById(filter.getCategories())))
+                    .and(ProductSpecifications.hasSizes(sizeRepository.findAllById(filter.getSizes())))
+                    .and(ProductSpecifications.hasPriceLessThan(filter.getPrice()));
 
-            List<Product> products;
+            // Thực hiện tìm kiếm với Specifications và pagination
+            Page<Product> productPage = productRepository.findAll(spec, PageRequest.of(filter.getPage(), filter.getSize()));
 
-            if (!categories.isEmpty() && !sizes.isEmpty() && filter.getPrice() != null) {
-                // Case 1: Filter by categories, sizes, and price
-                products = productRepository.findByCategoriesInAndSizesInAndPriceLessThan(
-                        categories, sizes, filter.getPrice(), PageRequest.of(filter.getPage(), filter.getSize()));
-            } else if (!categories.isEmpty() && !sizes.isEmpty()) {
-                // Case 2: Filter by categories and sizes
-                products = productRepository.findByCategoriesInAndSizesIn(
-                        categories, sizes, PageRequest.of(filter.getPage(), filter.getSize()));
-            } else if (!categories.isEmpty() && filter.getPrice() != null) {
-                // Case 3: Filter by categories and price
-                products = productRepository.findByCategoriesInAndPriceLessThan(
-                        categories, filter.getPrice(), PageRequest.of(filter.getPage(), filter.getSize()));
-            } else if (!sizes.isEmpty() && filter.getPrice() != null) {
-                // Case 4: Filter by sizes and price
-                products = productRepository.findBySizesInAndPriceLessThan(
-                        sizes, filter.getPrice(), PageRequest.of(filter.getPage(), filter.getSize()));
-            } else if (!categories.isEmpty()) {
-                // Case 5: Filter by categories only
-                products = productRepository.findByCategoriesIn(
-                        categories, PageRequest.of(filter.getPage(), filter.getSize()));
-            } else if (!sizes.isEmpty()) {
-                // Case 6: Filter by sizes only
-                products = productRepository.findBySizesIn(
-                        sizes, PageRequest.of(filter.getPage(), filter.getSize()));
-            } else if (filter.getPrice() != null) {
-                // Case 7: Filter by price only
-                products = productRepository.findByPriceLessThan(
-                        filter.getPrice(), PageRequest.of(filter.getPage(), filter.getSize()));
-            } else {
-                // Default case: No filters applied
-                products = productRepository.findAll(PageRequest.of(filter.getPage(), filter.getSize())).getContent();
-            }
+            // Map các sản phẩm sang DTO
+            List<ProductDto> dto = productPage.getContent().stream().map(this::mapToProductDto).collect(Collectors.toList());
 
-            // Map to DTOs
-            List<ProductDto> dto = products.stream().map(this::mapToProductDto).toList();
-            return new BaseResponse("Products found successfully", dto, 200);
+           return new PaginationResponse("Product list fetched successfully", dto, 200, productPage.getNumber() + 1, productPage.getTotalPages(), productPage.getTotalElements());
+
         } catch (Exception e) {
-            return new BaseResponse("Error  product", null, 500);
+            return new PaginationResponse("Error getting product list", null, 500, 0, 0, 0);
         }
     }
 
@@ -340,5 +316,37 @@ public class ProductServiceImpl implements ProductService {
             return new PaginationResponse("Error getting product list", null, 500, 0, 0, 0);
         }
     }
+
+    @Override
+    public PaginationResponse searchProduct(String searchValue, int page, int limit) {
+        try {
+            PageRequest pageable = PageRequest.of(page, limit);
+            Page<Product> products;
+
+            if (searchValue != null && !searchValue.trim().isEmpty()) {
+                // Filter products by searchValue
+                products = productRepository.findByNameContainingIgnoreCase(searchValue, pageable);
+            } else {
+                // Get all products if no searchValue is provided
+                products = productRepository.findAll(pageable);
+            }
+
+            // Map to DTOs
+            List<ProductDto> dto = products.getContent().stream().map(this::mapToProductDto).toList();
+
+            // Return PaginationResponse with pagination details
+            return new PaginationResponse(
+                    "Products retrieved successfully",
+                    dto,
+                    200,
+                    products.getNumber(),               // currentPage
+                    products.getTotalPages(),           // totalPages
+                    products.getTotalElements()         // totalElements
+            );
+        } catch (Exception e) {
+            return new PaginationResponse("Error retrieving products", null, 500, page, 0, 0);
+        }
+    }
+
 }
 

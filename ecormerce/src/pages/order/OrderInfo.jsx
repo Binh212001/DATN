@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { BaseApi } from "../../apis/BaseApi";
+import { openNotification } from "../catalog/CatalogConf";
 
 function OrderInfo() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
+
   const user = JSON.parse(localStorage.getItem("user"));
   const [shipper, setShipper] = useState([]);
   const [shipperSelected, setShipperSelected] = useState(0);
@@ -29,6 +31,10 @@ function OrderInfo() {
 
   const action = async (status) => {
     try {
+      if (shipperSelected === undefined) {
+        openNotification("Vui lòng chọn Shipper.");
+        return;
+      }
       await BaseApi.put(
         `/api/invoices/invoice/${id}/transfer/${shipperSelected}/status/${status}`
       );
@@ -200,8 +206,17 @@ function OrderInfo() {
                       <td className="px-4 py-2 text-sm text-gray-900">
                         {item?.quantity}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-900">XXL</td>
-                      <td className="px-4 py-2 text-sm text-gray-900">READ</td>
+                      <td className="px-4 py-2 text-sm text-gray-900">
+                        {item?.size}
+                      </td>
+                      <td
+                        className="px-4 py-2 text-sm text-gray-900"
+                        style={{
+                          background: item?.color,
+                        }}
+                      >
+                        {item?.color}
+                      </td>
                       <td className="px-4 py-2 text-sm text-right text-gray-500">
                         {item.totalPrice}
                       </td>
