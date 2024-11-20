@@ -24,7 +24,7 @@ public class Product {
     private Boolean gender;
     private Double price;
     private Boolean status;
-    private  Integer sold;
+    private  Integer sold = 0;
     @Column(name = "quantity" , nullable = true)
     private Integer quantity;
     @ManyToOne

@@ -59,16 +59,6 @@ function Catalog() {
               <p>Bạn đang xem: </p>
               <h4 className="text-[#712258] font-bold">SẢN PHẨM</h4>
             </div>
-            <Select
-              defaultValue="lucy"
-              style={{ width: 120 }}
-              // onChange={handleChange}
-              options={[
-                { value: "jack", label: "Jack" },
-                { value: "lucy", label: "Lucy" },
-                { value: "Yiminghe", label: "yiminghe" },
-              ]}
-            />
           </div>
           <Row gutter={[24, 24]}>
             {products?.map((product) => {

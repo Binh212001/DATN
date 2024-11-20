@@ -1,5 +1,6 @@
 package org.example.yodybe.controllers;
 
+import org.example.yodybe.dto.ProductTopDTO;
 import org.example.yodybe.entity.Product;
 import org.example.yodybe.form.FilterForm;
 import org.example.yodybe.service.ProductService;
@@ -68,6 +69,12 @@ public class ProductControllers {
 //        BaseResponse response = productService.getProductsByFilters(colorId, sizeId, page, size, minPrice, maxPrice, gender);
 //        return ResponseEntity.ok(response);
 //    }
+
+    @GetMapping("/top-selling")
+    public ResponseEntity<List<ProductTopDTO>> getTopSellingProducts() {
+        List<ProductTopDTO> topProducts = productService.getTop10BestSellingProducts();
+        return ResponseEntity.ok(topProducts);
+    }
     // PUT /products/{id}
 
     @PostMapping("/filter")

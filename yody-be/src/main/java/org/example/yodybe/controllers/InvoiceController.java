@@ -1,4 +1,6 @@
 package org.example.yodybe.controllers;
+import org.example.yodybe.dto.MonthlyTotalDTO;
+import org.example.yodybe.dto.TopCustomerDto;
 import org.example.yodybe.entity.InvoiceStatus;
 import org.example.yodybe.form.CartForm;
 import org.example.yodybe.form.InvoiceForm;
@@ -8,6 +10,8 @@ import org.example.yodybe.utils.PaginationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoices")
@@ -65,5 +69,18 @@ public class InvoiceController {
     @PostMapping
     public ResponseEntity<BaseResponse> createInvoice(@RequestBody InvoiceForm invoiceForm) {
         return ResponseEntity.ok(invoiceService.save(invoiceForm));
+    }
+
+    @GetMapping("/totals-by-month")
+    public ResponseEntity<List<MonthlyTotalDTO>> getTotalsByMonth() {
+        List<MonthlyTotalDTO> totals = invoiceService.getTotalAmountByMonth();
+        return ResponseEntity.ok(totals);
+    }
+
+
+    @GetMapping("/top-customers")
+    public ResponseEntity<List<TopCustomerDto>> getTopCustomers() {
+        List<TopCustomerDto> topCustomers = invoiceService.getTopCustomers();
+        return ResponseEntity.ok(topCustomers);
     }
 }

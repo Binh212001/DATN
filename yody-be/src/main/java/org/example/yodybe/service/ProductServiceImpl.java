@@ -2,6 +2,7 @@ package org.example.yodybe.service;
 
 import jakarta.transaction.Transactional;
 import org.example.yodybe.dto.ProductDto;
+import org.example.yodybe.dto.ProductTopDTO;
 import org.example.yodybe.entity.*;
 import org.example.yodybe.form.FilterForm;
 import org.example.yodybe.repositoties.*;
@@ -348,5 +349,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    public List<ProductTopDTO> getTop10BestSellingProducts() {
+        return productRepository.findTop10ByOrderBySoldDesc()
+                .stream()
+                .map(product -> new ProductTopDTO(product.getName(), product.getSold()))
+                .collect(Collectors.toList());
+    }
 }
-

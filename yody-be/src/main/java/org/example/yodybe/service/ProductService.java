@@ -1,6 +1,7 @@
 package org.example.yodybe.service;
 
 import org.example.yodybe.dto.ProductDto;
+import org.example.yodybe.dto.ProductTopDTO;
 import org.example.yodybe.entity.Product;
 import org.example.yodybe.form.FilterForm;
 import org.example.yodybe.utils.BaseResponse;
@@ -35,4 +36,6 @@ public interface ProductService {
     PaginationResponse getProductsByCategory(Long id, Integer page, Integer size);
 
     PaginationResponse searchProduct(String searchValue, int page, int limit);
+
+    List<ProductTopDTO> getTop10BestSellingProducts();
 }

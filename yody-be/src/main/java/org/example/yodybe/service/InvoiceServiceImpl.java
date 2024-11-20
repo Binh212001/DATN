@@ -1,11 +1,14 @@
 package org.example.yodybe.service;
 
 import org.example.yodybe.dto.InvoiceDto;
+import org.example.yodybe.dto.MonthlyTotalDTO;
 import org.example.yodybe.dto.ProductDto;
+import org.example.yodybe.dto.TopCustomerDto;
 import org.example.yodybe.entity.*;
 import org.example.yodybe.form.InvoiceForm;
 import org.example.yodybe.repositoties.CartRepository;
 import org.example.yodybe.repositoties.InvoiceRepository;
+import org.example.yodybe.repositoties.ProductRepository;
 import org.example.yodybe.repositoties.UserRepository;
 import org.example.yodybe.utils.BaseResponse;
 import org.example.yodybe.utils.PaginationResponse;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -27,6 +31,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     private UserRepository userRepository;
     @Autowired
     CartRepository cartRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public PaginationResponse getAllInvoice(Integer page, Integer size) {
@@ -38,14 +44,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
     }
 
-    public PaginationResponse getInvoiceShipper(int page, int limit, Long shipperId, InvoiceStatus status , String customerName) {
+    public PaginationResponse getInvoiceShipper(int page, int limit, Long shipperId, InvoiceStatus status, String customerName) {
         Pageable pageable = PageRequest.of(page, limit);
         Specification<Invoice> spec = Specification.where(InvoiceSpecification.hasShipperId(shipperId))
                 .and(InvoiceSpecification.hasStatus(status));
-                if (customerName!= null) {
-                    spec = spec.and(InvoiceSpecification.hasCustomerName(customerName));
-                }
-        return paginationResponseHandler( invoiceRepository.findAll(spec, pageable));
+        if (customerName != null) {
+            spec = spec.and(InvoiceSpecification.hasCustomerName(customerName));
+        }
+        return paginationResponseHandler(invoiceRepository.findAll(spec, pageable));
     }
 
     @Override
@@ -99,15 +105,30 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (!invoice.isPresent()) {
             return new BaseResponse("Invoice not found", null, 404);
         }
-            Optional<User> ship = userRepository.findById(userId);
-            if (!ship.isPresent()) {
-                return new BaseResponse("User not found", null, 404);
-            }
-            invoice.get().setShipper(ship.get());
+        Optional<User> ship = userRepository.findById(userId);
+        if (!ship.isPresent()) {
+            return new BaseResponse("User not found", null, 404);
+        }
+        invoice.get().setShipper(ship.get());
 
+        for (Cart c : invoice.get().getInvoiceItems()) {
+                Optional<Product> p = productRepository.findById(c.getProduct().getId());
+                if (p.isPresent()) {
+                    p.get().setSold(p.get().getQuantity() + c.getQuantity());
+                    productRepository.save(p.get());
+                }
+        }
         invoice.get().setStatus(status);
         invoiceRepository.save(invoice.get());
         return new BaseResponse("Invoice transfered successfully", mapToDto(invoice.get()), 200);
+    }
+
+    @Override
+    public List<MonthlyTotalDTO> getTotalAmountByMonth() {
+        List<Object[]> results = invoiceRepository.getTotalAmountByMonth();
+        return results.stream()
+                .map(row -> new MonthlyTotalDTO((Integer) row[0], (Integer) row[1], (Double) row[2]))
+                .collect(Collectors.toList());
     }
 
     private PaginationResponse paginationResponseHandler(Page<Invoice> invoices) {
@@ -129,5 +150,9 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceDto.setCreatedDate(invoice.getCreatedDate());
         invoiceDto.setShipper(invoice.getShipper());
         return invoiceDto;
+    }
+
+    public List<TopCustomerDto> getTopCustomers() {
+        return invoiceRepository.findTopCustomers();
     }
 }

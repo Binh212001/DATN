@@ -1,3 +1,4 @@
+import AdminHome from "../admin/AdminHome";
 import Cart from "../cart/Cart";
 import Catalog from "../catalog/Catalog";
 import CatalogConf from "../catalog/CatalogConf";
@@ -28,6 +29,7 @@ const routes = [
   { path: "/ship", component: <ShipPage />, layout: "common" },
   { path: "/order/user/:id", component: <Order />, layout: "common" },
   { path: "/order/list", component: <ListOrders />, layout: "admin" },
+  { path: "/admin/home", component: <AdminHome />, layout: "admin" },
   { path: "/order/info/:id", component: <OrderInfo />, layout: "common" },
   { path: "/catalog/:id", component: <Catalog />, linkName: "Catalog" },
   {

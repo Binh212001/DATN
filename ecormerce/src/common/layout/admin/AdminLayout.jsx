@@ -4,7 +4,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 const { Header, Content } = Layout;
 const items1 = [
-  { key: "1", label: <Link to="">Trang chủ</Link> },
+  { key: "1", label: <Link to="/admin/home">Trang chủ</Link> },
   { key: "2", label: <Link to="/products">Sản phẩm</Link> },
   { key: "3", label: <Link to="/order/list">Đơn hàng</Link> },
   { key: "4", label: <Link to="/user/kanban">Người dùng</Link> },

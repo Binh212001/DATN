@@ -20,7 +20,7 @@ function Order() {
 
   const navigate = useNavigate();
 
-  const openOrder = () => {
+  const openOrder = (id) => {
     navigate("/order/info/" + id);
   };
 
