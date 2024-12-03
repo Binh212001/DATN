@@ -1,10 +1,11 @@
-import { Button, Input, Modal, Select } from "antd";
+import { Button, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { BASEURL } from "../../apis/BaseApi";
 import { getCartById, updateCartItem } from "../../redux/cartAction";
 import PaymentConfirm from "./PaymentConfirm";
+
 function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -57,8 +58,10 @@ function Cart() {
       return newCheckAll;
     });
   };
-
-  // Calculate total price based on selected items
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const showModal = (otp) => {
+    setIsModalVisible(otp);
+  };
   const totalSelectedPrice = selectedItems.reduce((total, item) => {
     return total + item.totalPrice * 2;
   }, 0);
@@ -97,7 +100,7 @@ function Cart() {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {cartItems.length > 0 ? (
+            {cartItems?.length > 0 ? (
               cartItems.map((item) => (
                 <tr
                   key={item?.id}
@@ -173,16 +176,24 @@ function Cart() {
 
         <button
           className="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-          onClick={() => PaymentConfirm(selectedItems, method)}
           onMouseEnter={(e) =>
             (e.currentTarget.style.backgroundColor = "#1e40af")
           }
+          onClick={() => setIsModalVisible(true)}
           onMouseLeave={(e) =>
             (e.currentTarget.style.backgroundColor = "#1d4ed8")
           }
         >
           Thanh Toán
         </button>
+        {isModalVisible && (
+          <PaymentConfirm
+            items={selectedItems}
+            method={method}
+            totalSelectedPrice={totalSelectedPrice}
+            modal={showModal}
+          />
+        )}
       </div>
     </div>
   );

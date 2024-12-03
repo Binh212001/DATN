@@ -8,6 +8,7 @@ import ProductItem from "../item/ProductItem";
 import ListOrders from "../order/ListOrders";
 import Order from "../order/Order";
 import OrderInfo from "../order/OrderInfo";
+import UpdateInvoiceForm from "../order/UpdateInvoiceForm";
 import Product from "../product/Product";
 import ProductDetail from "../product/ProductDetail";
 import ProductSearch from "../product/ProductSearch";
@@ -51,6 +52,12 @@ const routes = [
   { path: "/product/config/color", component: <ColorConf />, layout: "admin" },
   { path: "/product/config/size", component: <SizeConf />, layout: "admin" },
   { path: "/user/kanban", component: <KanbanBoard />, layout: "admin" },
+  { path: "/user/kanban", component: <KanbanBoard />, layout: "admin" },
+  {
+    path: "/order/show/:id",
+    component: <UpdateInvoiceForm />,
+    layout: "admin",
+  },
 ];
 
 export default routes;

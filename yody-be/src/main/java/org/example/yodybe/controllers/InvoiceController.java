@@ -1,6 +1,8 @@
 package org.example.yodybe.controllers;
+import org.example.yodybe.dto.InvoiceDto;
 import org.example.yodybe.dto.MonthlyTotalDTO;
 import org.example.yodybe.dto.TopCustomerDto;
+import org.example.yodybe.entity.Invoice;
 import org.example.yodybe.entity.InvoiceStatus;
 import org.example.yodybe.form.CartForm;
 import org.example.yodybe.form.InvoiceForm;
@@ -77,10 +79,34 @@ public class InvoiceController {
         return ResponseEntity.ok(totals);
     }
 
+    @DeleteMapping
+    public ResponseEntity<BaseResponse> deleteInvoices(@RequestBody List<Long> ids) {
+        Boolean deleted  = invoiceService.deleteInvoices(ids);
+        return ResponseEntity.ok(new BaseResponse("Invoices deleted successfully", deleted , 200));
+    }
 
     @GetMapping("/top-customers")
     public ResponseEntity<List<TopCustomerDto>> getTopCustomers() {
         List<TopCustomerDto> topCustomers = invoiceService.getTopCustomers();
         return ResponseEntity.ok(topCustomers);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse> updateInvoiceDetails(
+            @PathVariable Long id,
+            @RequestBody InvoiceDto updatedDetails) {
+        InvoiceDto updatedInvoice = invoiceService.updateInvoiceDetails(id, updatedDetails);
+        return ResponseEntity.ok(new BaseResponse("Invoice updated successfully", updatedInvoice, 200));
+    }
+    @GetMapping("/filter")
+    public ResponseEntity<BaseResponse> getFilteredInvoices(
+            @RequestParam(required = false) String receiver,
+            @RequestParam(required = false) InvoiceStatus status) {
+        try {
+            List<Invoice> filteredInvoices = invoiceService.filterInvoices(receiver, status);
+            return ResponseEntity.ok(new BaseResponse("Invoices fetched successfully", filteredInvoices, 200));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new BaseResponse("Internal server error", null, 500));
+        }
     }
 }

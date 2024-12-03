@@ -50,6 +50,7 @@ public class UserController {
     PasswordEncoder passwordEncoder;
     @Value("${resources.images.directory}")
     private String uploadDir;
+
     @PostMapping("/login")
     public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
@@ -80,6 +81,7 @@ public class UserController {
         user.setUsername(userForm.getUsername());
         user.setPassword(passwordEncoder.encode(userForm.getPassword()));
         user.setFullName(userForm.getFullName());
+        user.setRole(Role.USER);
         User newUser = userRepository.save(user);
 
         Authentication authentication = authenticationManager.authenticate(
@@ -110,17 +112,19 @@ public class UserController {
         } else {
             users = userRepository.findByFullNameContains(searchTerm);
         }
-        return ResponseEntity.ok(new BaseResponse("Get all user" ,users, 200));
+        return ResponseEntity.ok(new BaseResponse("Get all user", users, 200));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateUser(@PathVariable Long id,
                                              @RequestParam String fullName,
-                                             @RequestParam String phone,
-                                             @RequestParam String addressDetail,
+                                             @RequestParam(required = false) String phone,
+                                             @RequestParam(required = false) String addressDetail,
                                              @RequestParam(required = false) MultipartFile avatar,
-                                             @RequestParam String district,
-                                             @RequestParam String province,
+                                             @RequestParam(required = false) String district,
+                                             @RequestParam(required = false) String province,
+                                             @RequestParam(required = false) String districtName,
+                                             @RequestParam(required = false) String provinceName,
                                              @RequestParam Role role,
                                              @RequestParam Boolean active) {
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -130,37 +134,50 @@ public class UserController {
         user.setDistrict(district);
         user.setProvince(province);
         user.setRole(role);
+        if (!districtName.isEmpty()) {
+            if (districtName.endsWith(",")) {
+                districtName = districtName.substring(0, districtName.length() - 1);
+            }
+            String[] parts = districtName.split(",");
+            user.setDistrictName(parts[parts.length - 1]);
+        }
+        if (!provinceName.isEmpty()) {
+            if (provinceName.endsWith(",")) {
+                provinceName = provinceName.substring(0, provinceName.length() - 1);
+            }
+            String[] parts = provinceName.split(",");
+            user.setProvinceName(parts[parts.length - 1]);
+        }
         user.setActive(active);
 
-        // Handle avatar file upload
 
         if (avatar != null && !avatar.isEmpty()) {
             try {
-                // Save the file to the server
                 byte[] bytes = avatar.getBytes();
-                String fileName = UUID.randomUUID() +avatar.getOriginalFilename();
-                String urlPath = uploadDir +fileName;
+                String fileName = UUID.randomUUID() + avatar.getOriginalFilename();
+                String urlPath = uploadDir + fileName;
                 Path path = Paths.get(urlPath);
                 Files.write(path, bytes);
-                // Store the file path or URL in the user entity
-                user.setAvatar(fileName); // Or store a relative path if needed
+                user.setAvatar(fileName);
             } catch (Exception e) {
                 return ResponseEntity.status(500).body("Error uploading file: " + e.getMessage());
             }
         }
-        // Save the updated user
         userRepository.save(user);
         return ResponseEntity.ok("User updated successfully");
     }
 
     @GetMapping("/{id}")
-    public  ResponseEntity getUser(@PathVariable Long id){
+    public ResponseEntity getUser(@PathVariable Long id) {
         // Find the user by ID
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return ResponseEntity.ok(user);
     }
-    @GetMapping("/role/{role}")
-    public List<User> getUsersByRole(@PathVariable Role role) {
-        return userService.getUsersByRole(role);
+
+    @GetMapping("/role/{role}/{orderId}")
+    public List<User> getUsersByRole(@PathVariable Role role,
+                                     @PathVariable Long orderId
+    ) {
+        return userService.getUsersByRole(role,orderId);
     }
 }

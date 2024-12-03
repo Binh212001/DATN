@@ -1,45 +1,81 @@
-import { Modal } from "antd";
+import React, { useState } from "react";
 import { BaseApi } from "../../apis/BaseApi";
-import { openNotification } from "../catalog/CatalogConf";
+import Content from "./Content";
 
-const PaymentConfirm = (items, method) => {
-  const totalSelectedPrice = items.reduce((total, item) => {
-    return total + item.totalPrice * 2;
-  }, 0);
+const PaymentConfirm = ({ items, method, totalSelectedPrice, modal }) => {
+  const [user, setUser] = useState({});
+
+  const openNotification = (message, description) => {
+    alert(`${message}: ${description}`);
+  };
+
+  const setUserInformation = (data) => {
+    setUser(data);
+  };
+
   const onOk = async () => {
-    let ids = [];
-    items.forEach((item) => {
-      ids.push(item.id);
-    });
+    const ids = items.map((item) => item.id); // Use map to create an array of ids
+
     try {
       const res = await BaseApi.post("/api/invoices", {
         totalAmount: totalSelectedPrice,
         status: "PENDING",
-        userId: items[0].user.id,
+        userId: items[0]?.user?.id, // Safe access using optional chaining
         cartId: ids,
         payment: method,
+        ...user,
+        receiver: user.fullName,
       });
-      if (res.status === 200) {
+
+      if (res?.status === 200) {
         openNotification(
-          "Thanh toan",
-          " Thanh toán thành công. Mã hóa đơn: " + res.data.id
+          "Thanh toán",
+          `Thanh toán thành công. Mã hóa đơn: ${res.data?.id}`
         );
       }
-    } catch (err) {}
+      modal(true);
+    } catch (err) {
+      openNotification("Lỗi thanh toán", "Đã xảy ra lỗi khi thanh toán.");
+      console.error(err);
+    }
   };
 
   const onCancel = () => {
-    console.log("Payment cancelled");
+    modal(false);
   };
 
-  return Modal.confirm({
-    title: "Xác nhận thanh toán",
-    content: "Bạn có chắc chắn muốn thanh toán không?",
-    okText: "Đồng ý",
-    cancelText: "Hủy",
-    onOk,
-    onCancel,
-  });
+  // Render custom modal
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg w-11/12 max-w-lg shadow-lg">
+        <div className="modal-header mb-4">
+          <h3 className="text-xl font-semibold">Xác nhận thanh toán</h3>
+        </div>
+        <div className="modal-body mb-6">
+          <Content
+            items={items}
+            method={method}
+            totalSelectedPrice={totalSelectedPrice}
+            setUserInformation={setUserInformation}
+          />
+        </div>
+        <div className="modal-footer flex justify-between">
+          <button
+            onClick={onOk}
+            className="px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Đồng ý
+          </button>
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 bg-red-500 text-white rounded-md"
+          >
+            Hủy
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default PaymentConfirm;

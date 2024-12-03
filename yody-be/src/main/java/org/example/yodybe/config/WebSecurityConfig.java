@@ -66,11 +66,10 @@ public class WebSecurityConfig {
 //    @Bean
 //    public CommandLineRunner commandLineRunner(UserRepository userRepository) {
 //        return args -> {
-//
-//            // Create a default user
 //            User user =  new User();
-//            user.setUsername("admin");
 //            user.setPassword(passwordEncoder().encode("1"));
+//            user.setUsername("admin@exmaple.com");
+//            user.setFullName("Admin");
 //            user.setRole(Role.USER);
 //            userRepository.save(user);
 //        };

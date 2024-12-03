@@ -37,6 +37,14 @@ public class Invoice {
     @Enumerated(EnumType.STRING)
     private  InvoiceStatus status;
     private Date createdDate;
+    private  String receiver;
+    private  String receiverPhone;
+    private  String province;
+    private  String district;
+    private  String address;
+    private  String provinceName;
+    private  String districtName;
+    private  String phone;
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

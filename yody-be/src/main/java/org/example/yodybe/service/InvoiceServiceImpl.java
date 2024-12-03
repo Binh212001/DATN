@@ -1,5 +1,6 @@
 package org.example.yodybe.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.yodybe.dto.InvoiceDto;
 import org.example.yodybe.dto.MonthlyTotalDTO;
 import org.example.yodybe.dto.ProductDto;
@@ -12,6 +13,7 @@ import org.example.yodybe.repositoties.ProductRepository;
 import org.example.yodybe.repositoties.UserRepository;
 import org.example.yodybe.utils.BaseResponse;
 import org.example.yodybe.utils.PaginationResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -79,6 +81,13 @@ public class InvoiceServiceImpl implements InvoiceService {
             inv.setUser(user);
             inv.setTotalAmount(invoiceForm.getTotalAmount());
             inv.setInvoiceItems(carts);
+            inv.setDistrict(invoiceForm.getDistrict());
+            inv.setDistrictName(invoiceForm.getDistrictName());
+            inv.setReceiver(invoiceForm.getReceiver());
+            inv.setAddress(invoiceForm.getAddress());
+            inv.setProvince(invoiceForm.getProvince());
+            inv.setProvinceName(invoiceForm.getProvinceName());
+            inv.setPhone(invoiceForm.getPhone());
             Invoice res = invoiceRepository.save(inv);
             return new BaseResponse("Lưu thành công", res, 200);
         } catch (Exception e) {
@@ -149,10 +158,64 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceDto.setStatus(invoice.getStatus());
         invoiceDto.setCreatedDate(invoice.getCreatedDate());
         invoiceDto.setShipper(invoice.getShipper());
+        invoiceDto.setReceiver(invoice.getReceiver());
+        invoiceDto.setReceiverPhone(invoice.getReceiverPhone());
+        invoiceDto.setProvince(invoice.getProvince());
+        invoiceDto.setDistrict(invoice.getDistrict());
+        invoiceDto.setAddress(invoice.getAddress());
+        invoiceDto.setDistrictName(invoice.getDistrictName());
+        invoiceDto.setProvinceName(invoice.getProvinceName());
+        invoiceDto.setPhone(invoice.getPhone());
         return invoiceDto;
     }
 
     public List<TopCustomerDto> getTopCustomers() {
         return invoiceRepository.findTopCustomers();
+    }
+
+    @Override
+    public Boolean deleteInvoices(List<Long> ids) {
+        try {
+            invoiceRepository.deleteAllById(ids);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public InvoiceDto updateInvoiceDetails(Long id, InvoiceDto updatedDetails) {
+        Invoice invoice = invoiceRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Invoice not found with ID: " + id));
+
+        invoice.setReceiver(updatedDetails.getReceiver());
+        invoice.setProvince(updatedDetails.getProvince());
+        invoice.setProvinceName(updatedDetails.getProvinceName());
+        invoice.setDistrict(updatedDetails.getDistrict());
+        invoice.setDistrictName(updatedDetails.getDistrictName());
+        invoice.setAddress(updatedDetails.getAddress());
+        invoice.setPhone(updatedDetails.getPhone());
+
+        invoice = invoiceRepository.save(invoice);
+
+        InvoiceDto invoiceDto = new InvoiceDto();
+        BeanUtils.copyProperties(invoice, invoiceDto);
+        return invoiceDto;
+    }
+
+    @Override
+    public List<Invoice> filterInvoices(String receiver, InvoiceStatus status) {
+        if (receiver != null && !receiver.isEmpty() && status != null) {
+            return invoiceRepository.findByReceiverAndStatus(receiver, status);
+        }
+        else if (receiver != null && !receiver.isEmpty()) {
+            return invoiceRepository.findByReceiver(receiver);
+        }
+        else if (status != null) {
+            return invoiceRepository.findByStatus(status);
+        }
+        else {
+            return invoiceRepository.findAll();
+        }
     }
 }

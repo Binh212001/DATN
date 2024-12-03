@@ -42,7 +42,7 @@ function UserDropdown({ user }) {
       label: (
         <Link
           to={"/ship"}
-          className={`${role === "SHIPPER" ? "hidden" : "d-block"}`}
+          className={`${role === "SHIPPER" ? "d-block" : "hidden"}`}
         >
           {role === "SHIPPER" && (
             <div>

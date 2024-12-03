@@ -18,7 +18,10 @@ function OrderInfo() {
         const response = await BaseApi.get(`/api/invoices/invoice`, {
           params: { id },
         });
-        const shipRes = await BaseApi.get("/api/user/role/SHIPPER");
+        const shipRes = await BaseApi.get(
+          "/api/user/role/SHIPPER/" + response.data.id
+        );
+        console.log("🚀 ~ getOrder ~ shipRes:", shipRes);
         setShipper(shipRes);
         setOrder(response.data);
         setShipperSelected(response.data.shipper?.id);
@@ -99,54 +102,47 @@ function OrderInfo() {
               <h3 className="text-md font-medium text-gray-700 mb-2">
                 Thông tin Khách hàng
               </h3>
-              <p className="text-sm text-gray-900">John Doe</p>
-              <p className="text-sm text-gray-500">john.doe@example.com</p>
+              <p className="text-sm text-gray-900">{order?.receiver}</p>
               <p className="text-sm text-gray-500">
-                Điện thoại: +1 234 567 890
+                Điện thoại: {order?.phone}
               </p>
               <p className="text-sm text-gray-500">
-                Địa chỉ: 123 Main St, Springfield
+                Địa chỉ: {order?.address} - {order?.districtName} -
+                {order?.provinceName}
               </p>
             </div>
-
             <div className="bg-gray-50 p-4 rounded-lg shadow">
               <h3 className="text-md font-medium text-gray-700 mb-2">
                 Thông tin Vận chuyển
               </h3>
-              <p className="text-sm text-gray-900">123 Main St, Springfield</p>
+              <p className="text-sm text-gray-900">
+                Người giao hàng : {order?.shipper?.fullName}
+              </p>
               <p className="text-sm text-gray-500">
-                Ngày dự kiến giao: 25-10-2024
+                Ngày dự kiến giao: {order?.createdDate?.split("T")[0]}
               </p>
               <p className="text-sm text-gray-500">
                 Phương thức vận chuyển: Giao hàng tiêu chuẩn
               </p>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg shadow">
-              <h3 className="text-md font-medium text-gray-700 mb-2">
-                Thông tin Shipper
-              </h3>
-              <select
-                name="shipper"
-                value={shipperSelected}
-                disabled={user.role !== "ADMIN"}
-                onChange={(e) => setShipperSelected(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              >
-                <option value={0}></option>
-                {shipper.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.fullName}
-                  </option>
-                ))}
-              </select>
-              <p className="text-sm text-gray-900">123 Main St, Springfield</p>
-              <p className="text-sm text-gray-500">
-                Ngày dự kiến giao: 25-10-2024
-              </p>
-              <p className="text-sm text-gray-500">
-                Phương thức vận chuyển: Giao hàng tiêu chuẩn
-              </p>
-            </div>
+            {user.role == "ADMIN" && (
+              <div className="bg-gray-50 p-4 rounded-lg shadow">
+                <span>Chọn Người giao hàng</span>
+                <select
+                  name="shipper"
+                  value={shipperSelected}
+                  onChange={(e) => setShipperSelected(e.target.value)}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value={0}></option>
+                  {shipper.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.fullName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-between items-center">

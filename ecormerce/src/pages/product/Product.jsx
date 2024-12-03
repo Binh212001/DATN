@@ -9,6 +9,7 @@ import { getColors } from "../../redux/colorAtion";
 import { getProducts } from "../../redux/productAction";
 import { getSizes } from "../../redux/sizeAtion";
 import { useNavigate } from "react-router-dom";
+import { openNotification } from "../catalog/CatalogConf";
 
 function Product() {
   const dispatch = useDispatch();
@@ -192,7 +193,7 @@ function Product() {
       setIsModalVisible(false);
       form.resetFields();
     } catch (error) {
-      console.error("Failed to submit form", error);
+      openNotification("Vui lòng đăng nhập đầy dủ thông tin.");
     }
   };
 
@@ -253,7 +254,7 @@ function Product() {
             style={{ width: 50 }}
           />
         ) : (
-          "No Avatar"
+          <></>
         ),
     },
   ];

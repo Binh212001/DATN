@@ -25,4 +25,12 @@ public class InvoiceDto implements Serializable {
     Payment payment;
     Date createdDate;
     User shipper;
+    private  String receiver;
+    private  String receiverPhone;
+    private  String province;
+    private  String provinceName;
+    private  String districtName;
+    private  String district;
+    private  String address;
+    private  String phone;
 }

@@ -32,6 +32,7 @@ function ColorConf() {
   const [action, setAction] = useState(false);
   const [mode, setMode] = useState(true);
   const [colorSelector, setcolorSelector] = useState([]);
+  const [cl, setCl] = useState([]);
   const dispatch = useDispatch();
 
   const { colors } = useSelector((state) => state.color);
@@ -44,33 +45,6 @@ function ColorConf() {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  //action
-  const items = [
-    {
-      key: "1",
-      label: (
-        <button
-          onClick={() => {
-            if (colorSelector.length !== 1) {
-              openNotification(
-                "Cập nhật sản phẩm",
-                "Chỉ cho phép update 1 item."
-              );
-              return;
-            }
-            showModal();
-            setMode(false);
-          }}
-        >
-          Sửa
-        </button>
-      ),
-    },
-    {
-      key: "2",
-      label: <button onClick={() => deleteColor()}>Xóa</button>,
-    },
-  ];
 
   const deleteColor = () => {
     const ids = [];
@@ -78,13 +52,16 @@ function ColorConf() {
       ids.push(catalog.id);
     });
     dispatch(removeColor(ids));
+    setIsModalDelete(false);
   };
 
   // rowSelection object indicates the need for row selection
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      setcolorSelector(selectedRows);
       if (selectedRows.length > 0) {
+        const c = selectedRows.map((c) => c?.name);
+        setcolorSelector(selectedRows);
+        setCl(c);
         setAction(true);
       } else {
         setAction(false);
@@ -93,7 +70,7 @@ function ColorConf() {
   };
 
   //Modal dialog shows hide
-
+  const [isModalDelete, setIsModalDelete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setMode(true);
@@ -112,6 +89,12 @@ function ColorConf() {
 
   return (
     <div className="container m-auto">
+      <Modal
+        title={`Bạn có muốn xóa màu sắc [ ${cl} ] không`}
+        open={isModalDelete}
+        onOk={deleteColor}
+        onCancel={() => setIsModalDelete(false)}
+      ></Modal>
       <Modal
         title={`${mode ? "Tạo  màu sắc" : "Cập nhật  màu sắc"}`}
         open={isModalOpen}
@@ -163,15 +146,26 @@ function ColorConf() {
         </Form>
       </Modal>
       <div className="my-3 flex gap-3">
-        <Button onClick={showModal}>Thêm danh muc</Button>
+        <Button onClick={showModal}>Thêm màu sắc</Button>
         {action && (
-          <Dropdown
-            menu={{
-              items,
-            }}
-          >
-            <SettingOutlined />
-          </Dropdown>
+          <>
+            <Button
+              onClick={() => {
+                if (colorSelector.length !== 1) {
+                  openNotification(
+                    "Cập nhật sản phẩm",
+                    "Chỉ cho phép update 1 item."
+                  );
+                  return;
+                }
+                showModal();
+                setMode(false);
+              }}
+            >
+              Sửa
+            </Button>
+            <Button onClick={() => deleteColor()}>Xóa</Button>
+          </>
         )}
       </div>
       <Table

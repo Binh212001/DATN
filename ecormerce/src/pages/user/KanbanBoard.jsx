@@ -171,7 +171,7 @@ const KanbanBoard = () => {
             style={{ width: 50 }}
           />
         ) : (
-          "No Avatar"
+          <></>
         ),
     },
     {
@@ -181,13 +181,13 @@ const KanbanBoard = () => {
     },
     {
       title: "Province",
-      dataIndex: "province",
-      key: "province",
+      dataIndex: "provinceName",
+      key: "provinceName",
     },
     {
       title: "District",
-      dataIndex: "district",
-      key: "district",
+      dataIndex: "districtName",
+      key: "districtName",
     },
     {
       title: "Username",

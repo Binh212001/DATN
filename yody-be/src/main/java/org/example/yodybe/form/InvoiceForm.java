@@ -18,4 +18,12 @@ public class InvoiceForm implements Serializable {
     Long userId;
     List<Long> cartId ;
     Payment payment;
+    private  String receiver;
+    private  String receiverPhone;
+    private  String province;
+    private  String district;
+    private  String address;
+    private  String provinceName;
+    private  String districtName;
+    private  String phone;
 }

@@ -131,6 +131,7 @@ function Header() {
               }}
             />
           </div>
+          <div>{user?.fullName}</div>
           {isLogin ? (
             <UserDropdown user={user} />
           ) : (

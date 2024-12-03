@@ -17,6 +17,7 @@ function LoginForm({ setIsModalOpen }) {
         }
         openNotification("Đăng nhập thành công");
         setIsModalOpen(false);
+        window.location.reload();
       } else {
         const res = await BaseApi.post(`/api/user/register`, data);
         if (res.token) {
@@ -70,7 +71,7 @@ function LoginForm({ setIsModalOpen }) {
       {!type && (
         <Form.Item
           label="Họ và tên"
-          name="fullname"
+          name="fullName"
           rules={[
             {
               required: true,

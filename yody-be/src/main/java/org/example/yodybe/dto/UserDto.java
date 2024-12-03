@@ -15,6 +15,8 @@ public class UserDto implements Serializable {
     String fullName;
     String phone;
     String district;
+    String provinceName;
+    String districtName;
     String province;
     String addressDetail;
     String avatar;

@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BaseApi } from "../../apis/BaseApi";
-import { Pagination } from "antd";
+import { Button, Input, Pagination, Select, Table } from "antd";
 
 const ListOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]); // State to manage selected rows
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(80); // Number of users per page
-  const [totalElements, setTotalElements] = useState(80); // Number of users per page
+  const [pageSize, setPageSize] = useState(80);
+  const [totalElements, setTotalElements] = useState(80);
+
   const onPageChange = (page, pageSize) => {
     setCurrentPage(page);
     setPageSize(pageSize);
   };
+
   useEffect(() => {
     async function fetchOrder() {
       const response = await BaseApi.get("/api/invoices", {
         params: {
           page: currentPage - 1,
           size: pageSize,
-          // search: searchTerm,
-          // status: statusFilter,
         },
       });
       setOrders(response.data);
@@ -31,23 +32,25 @@ const ListOrders = () => {
     }
     fetchOrder();
   }, [currentPage, pageSize]);
-  // Hàm tìm kiếm
+
   const handleSearch = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
-    filterData(value, statusFilter);
   };
 
-  // Hàm lọc
-  const handleStatusFilter = (e) => {
-    const value = e.target.value;
+  const handleStatusFilter = async (value) => {
     setStatusFilter(value);
-    filterData(searchTerm, value);
   };
 
-  // Hàm lọc và tìm kiếm dữ liệu
-  const filterData = (searchValue, statusValue) => {};
-
+  const filterInv = async () => {
+    const response = await BaseApi.get("/api/invoices/filter", {
+      params: {
+        status: statusFilter,
+        receiver: searchTerm,
+      },
+    });
+    setOrders(response.data);
+  };
   const reset = async () => {
     setSearchTerm("");
     setStatusFilter("");
@@ -55,95 +58,125 @@ const ListOrders = () => {
       params: {
         page: currentPage - 1,
         size: pageSize,
-        // search: searchTerm,
-        // status: statusFilter,
       },
     });
     setOrders(response.data);
     setTotalElements(response.totalElements);
   };
-  //Open Order
+
   const openOrder = (id) => {
     navigate("/order/info/" + id);
   };
+
+  const onSelectChange = (selectedKeys) => {
+    setSelectedRowKeys(selectedKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const handleDelete = async () => {
+    // Call API to delete selected orders
+    await BaseApi.delete("/api/invoices", { data: selectedRowKeys });
+    setSelectedRowKeys([]);
+    // Refresh the order list
+    const response = await BaseApi.get("/api/invoices", {
+      params: {
+        page: currentPage - 1,
+        size: pageSize,
+      },
+    });
+    setOrders(response.data);
+    setTotalElements(response.totalElements);
+  };
+
+  const columns = [
+    {
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Khách hàng",
+      dataIndex: "receiver",
+      key: "receiver",
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Tổng",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (totalAmount) => `$${totalAmount.toFixed(2)}`,
+    },
+  ];
 
   return (
     <div className="container mx-auto p-6">
       {/* Tìm kiếm và Lọc */}
       <div className="mb-6 flex space-x-4">
-        {/* Ô tìm kiếm */}
-        <input
-          type="text"
+        <Input
           placeholder="Tìm theo tên khách hàng"
           value={searchTerm}
           onChange={handleSearch}
-          className="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          className="w-60"
         />
 
-        {/* Bộ lọc trạng thái */}
-        <select
+        <Select
           value={statusFilter}
           onChange={handleStatusFilter}
-          className="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+          className="w-48"
+          placeholder="Lọc theo trạng thái"
         >
-          <option value="">Lọc theo trạng thái</option>
-          <option value="Hoàn thành">Hoàn thành</option>
-          <option value="Đang chờ">Đang chờ</option>
-          <option value="Đã giao">Đã giao</option>
-        </select>
+          <Select.Option value="">Tất cả</Select.Option>
+          <Select.Option value="PENDING">Hoàn thành</Select.Option>
+          <Select.Option value="CANCELLED">Đang chờ</Select.Option>
+          <Select.Option value="DELIVERED">Đã giao</Select.Option>
+          <Select.Option value="RETURNED">Đã giao</Select.Option>
+          <Select.Option value="COMPLETED">Đã giao</Select.Option>
+        </Select>
 
-        {/* Nút đặt lại */}
-        <button
-          onClick={() => {}}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
-        >
+        <Button type="primary" onClick={() => filterInv()}>
           Lọc
-        </button>
-        <button
-          onClick={() => {
-            reset();
-          }}
-          className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:border-red-300"
-        >
+        </Button>
+        <Button onClick={reset} type="danger">
           Đặt lại
-        </button>
+        </Button>
       </div>
 
       {/* Bảng danh sách đơn hàng */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-              <th className="px-4 py-2 border-b">Số đơn hàng</th>
-              <th className="px-4 py-2 border-b">Tên khách hàng</th>
-              <th className="px-4 py-2 border-b">Trạng thái</th>
-              <th className="px-4 py-2 border-b">Tổng cộng ($)</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {orders.map((order) => (
-              <tr key={order.id} onClick={() => openOrder(order.id)}>
-                <td className="px-4 py-2">#{order?.id}</td>
-                <td className="px-4 py-2">{order?.user?.fullName}</td>
-                <td className="px-4 py-2">
-                  <span>{order?.status}</span>
-                </td>
-                <td className="px-4 py-2">${order?.totalAmount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-center">
-        <Pagination
-          className="mt-4 "
-          current={currentPage}
-          pageSize={pageSize}
-          total={totalElements}
-          showSizeChanger
-          onChange={onPageChange}
-          onShowSizeChange={onPageChange}
-        />
+      <Table
+        rowSelection={rowSelection} // Enable row selection
+        columns={columns}
+        dataSource={orders}
+        rowKey="id"
+        pagination={false}
+        onRow={(record) => ({
+          onClick: () => openOrder(record.id),
+        })}
+        className="overflow-x-auto"
+      />
+
+      {/* Delete Button and Pagination */}
+      <div className="flex  mt-4">
+        {selectedRowKeys?.length > 0 && (
+          <Button type="danger" onClick={handleDelete}>
+            Xóa ({selectedRowKeys?.length})
+          </Button>
+        )}
+        {selectedRowKeys?.length === 1 && (
+          <Button
+            type="danger"
+            onClick={() => navigate("/order/show/" + selectedRowKeys[0])}
+          >
+            Cập nhật ({selectedRowKeys?.length})
+          </Button>
+        )}
       </div>
     </div>
   );

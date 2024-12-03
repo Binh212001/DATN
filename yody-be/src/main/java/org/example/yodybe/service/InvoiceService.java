@@ -1,7 +1,9 @@
 package org.example.yodybe.service;
 
+import org.example.yodybe.dto.InvoiceDto;
 import org.example.yodybe.dto.MonthlyTotalDTO;
 import org.example.yodybe.dto.TopCustomerDto;
+import org.example.yodybe.entity.Invoice;
 import org.example.yodybe.entity.InvoiceStatus;
 import org.example.yodybe.form.InvoiceForm;
 import org.example.yodybe.utils.BaseResponse;
@@ -23,4 +25,10 @@ public interface InvoiceService {
 
     List<MonthlyTotalDTO> getTotalAmountByMonth();
     List<TopCustomerDto> getTopCustomers();
+
+    Boolean deleteInvoices(List<Long> ids);
+
+    InvoiceDto updateInvoiceDetails(Long id, InvoiceDto updatedDetails);
+
+    public List<Invoice> filterInvoices(String receiver, InvoiceStatus status);
 }

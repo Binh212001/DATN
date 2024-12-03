@@ -45,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     public List<Product> getProductsOnSale() {
-        return productRepository.findBySalePercentageGreaterThan(0);
+        return productRepository.findBySalePercentageGreaterThan(1);
     }
     @Transactional
     @Override

@@ -35,4 +35,10 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> , JpaSpe
             "GROUP BY i.user.id, i.user.username " +
             "ORDER BY SUM(i.totalAmount) DESC")
     List<TopCustomerDto> findTopCustomers();
+
+    List<Invoice> findByReceiverAndStatus(String receiver, InvoiceStatus status);
+
+    List<Invoice> findByReceiver(String receiver);
+
+    List<Invoice> findByStatus(InvoiceStatus status);
 }

@@ -1,12 +1,12 @@
 package org.example.yodybe.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
     @Id
@@ -19,14 +19,12 @@ public class User {
     private String fullName;
     private String phone;
     private String district;
+    private  String provinceName;
+    private  String districtName;
     private String province;
     private String addressDetail;
     private String avatar;
     @Enumerated(EnumType.STRING)
     private Role role;
     private boolean active;
-    @PrePersist
-    public void onCreate() {
-       Role role = Role.USER;
-    }
 }
