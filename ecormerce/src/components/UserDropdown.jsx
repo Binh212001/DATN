@@ -56,9 +56,16 @@ function UserDropdown({ user }) {
     {
       key: "5",
       label: (
-        <Link to={"/products"}>
-          <HomeOutlined />
-          Kho hàng
+        <Link
+          to={"/admin/home"}
+          className={`${role === "ADMIN" ? "d-block" : "hidden"}`}
+        >
+          {role === "ADMIN" && (
+            <div>
+              <HomeOutlined />
+              Kho hàng
+            </div>
+          )}
         </Link>
       ),
     },

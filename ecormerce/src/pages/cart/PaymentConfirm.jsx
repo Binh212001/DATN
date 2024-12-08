@@ -33,7 +33,7 @@ const PaymentConfirm = ({ items, method, totalSelectedPrice, modal }) => {
           `Thanh toán thành công. Mã hóa đơn: ${res.data?.id}`
         );
       }
-      modal(true);
+      modal(false);
     } catch (err) {
       openNotification("Lỗi thanh toán", "Đã xảy ra lỗi khi thanh toán.");
       console.error(err);

@@ -55,7 +55,7 @@ function OrderInfo() {
         </h1>
         <div className="flex justify-between align-middle">
           <div className="List-btn flex justify-start gap-2 align-middle">
-            {user?.role === "ADMIN" && order?.status === "PENDING" && (
+            {user?.role === "ADMIN" && order?.status == "PENDING" && (
               <button
                 onClick={() => action("DELIVERED")}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -79,12 +79,14 @@ function OrderInfo() {
                 </button>
               </div>
             )}
-            <button
-              onClick={() => action("CANCELLED")}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              Hủy đơn hàng
-            </button>
+            {user?.role === "ADMIN" && order?.status != "COMPLETED" && (
+              <button
+                onClick={() => action("CANCELLED")}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Hủy đơn hàng
+              </button>
+            )}
           </div>
         </div>
 

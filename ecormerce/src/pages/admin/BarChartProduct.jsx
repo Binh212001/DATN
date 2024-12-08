@@ -33,28 +33,17 @@ const BarChartProduct = ({ data }) => {
   };
 
   // Chart options
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: "top",
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
+  const chartOptions = {
     scales: {
-      y: {
-        beginAtZero: true,
+      x: {
         ticks: {
-          precision: 0, // Show whole numbers only
+          display: false, // Hides the labels on the x-axis
         },
       },
     },
   };
 
-  return <Bar data={chartData} options={options} />;
+  return <Bar data={chartData} options={chartOptions} />;
 };
 
 export default BarChartProduct;
