@@ -23,7 +23,7 @@ const BarChartProduct = ({ data }) => {
     labels: cleanedData.map((d) => d.name), // Product names
     datasets: [
       {
-        label: "Units Sold",
+        label: "Đã bán",
         data: cleanedData.map((d) => d.sold),
         backgroundColor: "rgba(75, 192, 192, 0.5)", // Adjust color as needed
         borderColor: "rgba(75, 192, 192, 1)",

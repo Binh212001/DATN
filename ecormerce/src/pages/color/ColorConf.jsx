@@ -12,7 +12,7 @@ import { openNotification } from "../catalog/CatalogConf";
 
 const columns = [
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
   },
   {

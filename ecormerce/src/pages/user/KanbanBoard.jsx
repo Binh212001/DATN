@@ -149,25 +149,25 @@ const KanbanBoard = () => {
       key: "id",
     },
     {
-      title: "Full Name",
+      title: "Họ và Tên", // Full Name
       dataIndex: "fullName",
       key: "fullName",
       ...getColumnSearchProps("fullName"),
     },
     {
-      title: "Address Detail",
+      title: "Chi tiết địa chỉ", // Address Detail
       dataIndex: "addressDetail",
       key: "addressDetail",
     },
     {
-      title: "Avatar",
+      title: "Ảnh đại diện", // Avatar
       dataIndex: "avatar",
       key: "avatar",
       render: (url) =>
         url ? (
           <img
             src={`${BASEURL}images/${url}`}
-            alt="Avatar"
+            alt="Ảnh đại diện"
             style={{ width: 50 }}
           />
         ) : (
@@ -175,36 +175,35 @@ const KanbanBoard = () => {
         ),
     },
     {
-      title: "Phone",
+      title: "Số điện thoại", // Phone
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Province",
+      title: "Tỉnh", // Province
       dataIndex: "provinceName",
       key: "provinceName",
     },
     {
-      title: "District",
+      title: "Quận/Huyện", // District
       dataIndex: "districtName",
       key: "districtName",
     },
     {
-      title: "Username",
+      title: "Tên đăng nhập", // Username
       dataIndex: "username",
       key: "username",
     },
     {
-      title: "Role",
+      title: "Vai trò", // Role
       dataIndex: "role",
       key: "role",
     },
-
     {
-      title: "Active",
+      title: "Hoạt động", // Active
       dataIndex: "active",
       key: "active",
-      render: (text) => (text ? "Yes" : "No"),
+      render: (text) => (text ? "Có" : "Không"),
     },
   ];
 

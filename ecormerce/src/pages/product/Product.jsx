@@ -203,7 +203,6 @@ function Product() {
     dispatch(getCatalogs());
     dispatch(getProducts());
   }, [dispatch]);
-
   const columns = [
     {
       title: "ID",
@@ -211,46 +210,45 @@ function Product() {
       key: "id",
     },
     {
-      title: "Name",
+      title: "Tên", // Name
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
     },
     {
-      title: "price",
+      title: "Giá", // Price
       dataIndex: "price",
       key: "price",
     },
     {
-      title: "quantity",
+      title: "Số lượng", // Quantity
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "status",
+      title: "Trạng thái", // Status
       dataIndex: "status",
       filters: [
         {
-          text: "Active",
+          text: "Hoạt động", // Active
           value: true,
         },
         {
-          text: "Unactive",
+          text: "Không hoạt động", // Unactive
           value: false,
         },
       ],
       key: "status",
     },
-
     {
-      title: "Images",
+      title: "Hình ảnh", // Images
       dataIndex: "images",
       key: "images",
       render: (images) =>
         images ? (
           <img
             src={`${BASEURL}images/${images[0].imageUrl}`}
-            alt="Avatar"
+            alt="Hình ảnh"
             style={{ width: 50 }}
           />
         ) : (

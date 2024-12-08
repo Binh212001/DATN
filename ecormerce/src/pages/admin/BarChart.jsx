@@ -18,7 +18,7 @@ const BarChart = ({ data }) => {
     labels: data.map((d) => `Month ${d.month}/${d.year}`),
     datasets: [
       {
-        label: "Total Amount",
+        label: "Doanh số",
         data: data.map((d) => d.totalAmount),
         backgroundColor: "rgba(255, 99, 132, 0.5)", // Use red shades since your primary color is red
         borderColor: "rgba(255, 99, 132, 1)",

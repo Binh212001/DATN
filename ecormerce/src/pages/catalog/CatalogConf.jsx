@@ -196,7 +196,7 @@ function CatalogConf() {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "name",
       ...getColumnSearchProps("name"),
     },

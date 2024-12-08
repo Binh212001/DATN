@@ -12,7 +12,7 @@ import {
 
 const columns = [
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
   },
 ];
