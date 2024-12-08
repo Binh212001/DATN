@@ -164,7 +164,7 @@ function ColorConf() {
             >
               Sửa
             </Button>
-            <Button onClick={() => deleteColor()}>Xóa</Button>
+            <Button onClick={() => setIsModalDelete(true)}>Xóa</Button>
           </>
         )}
       </div>

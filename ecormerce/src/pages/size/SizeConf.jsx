@@ -21,43 +21,19 @@ function SizeConf() {
   const [action, setAction] = useState(false);
   const [mode, setMode] = useState(true);
   const [sizeSelector, setSizeSelector] = useState([]);
+  const [size, setSize] = useState([]);
+
   const dispatch = useDispatch();
 
   const { sizes } = useSelector((state) => state.size);
 
-  //action
-  const items = [
-    {
-      key: "1",
-      label: (
-        <button
-          onClick={() => {
-            if (sizeSelector.length != 1) {
-              openNotification(
-                "Cập nhật  kích cỡ.",
-                "Chỉ cho phép cập nhật 1 item."
-              );
-              return;
-            }
-            showModal();
-            setMode(false);
-          }}
-        >
-          Sửa
-        </button>
-      ),
-    },
-    {
-      key: "2",
-      label: <button onClick={() => deleteSize()}>Xóa</button>,
-    },
-  ];
   const deleteSize = () => {
     const ids = [];
     sizeSelector.forEach((s) => {
       ids.push(s.id);
     });
     dispatch(removeSize(ids));
+    setIsModalDelete(false);
   };
 
   //form
@@ -73,21 +49,24 @@ function SizeConf() {
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       if (selectedRows.length > 0) {
+        const sz = selectedRows.map((row) => row?.name);
         setSizeSelector(selectedRows);
+        setSize(sz);
         setAction(true);
       } else {
         setAction(false);
       }
     },
     getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User",
-      name: record.name,
+      disabled: record?.name === "Disabled User",
+      name: record?.name,
     }),
   };
 
   //Modal dialog shows hide
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalDelete, setIsModalDelete] = useState(false);
   const showModal = () => {
     setMode(true);
     setIsModalOpen(true);
@@ -105,6 +84,12 @@ function SizeConf() {
 
   return (
     <div className="container m-auto">
+      <Modal
+        title={`Bạn có muốn xóa kích cỡ [ ${size} ] không`}
+        open={isModalDelete}
+        onOk={deleteSize}
+        onCancel={() => setIsModalDelete(false)}
+      ></Modal>
       <Modal
         title={`${mode ? "Tạo size" : "Cập nhật size"}`}
         open={isModalOpen}
@@ -157,13 +142,24 @@ function SizeConf() {
       <div className="my-3 flex gap-3">
         <Button onClick={showModal}>Thêm kích cỡ</Button>
         {action && (
-          <Dropdown
-            menu={{
-              items,
-            }}
-          >
-            <SettingOutlined />
-          </Dropdown>
+          <>
+            <Button
+              onClick={() => {
+                if (setSizeSelector.length !== 1) {
+                  openNotification(
+                    "Cập nhật sản phẩm",
+                    "Chỉ cho phép update 1 item."
+                  );
+                  return;
+                }
+                showModal();
+                setMode(false);
+              }}
+            >
+              Sửa
+            </Button>
+            <Button onClick={() => setIsModalDelete(true)}>Xóa</Button>
+          </>
         )}
       </div>
       <Table

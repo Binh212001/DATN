@@ -204,7 +204,7 @@ function CatalogConf() {
   return (
     <div className="container m-auto">
       <Modal
-        title={`Bạn có muốn xóa size [ ${cat} ] không`}
+        title={`Bạn có muốn xóa danh mục [ ${cat} ] không`}
         open={isModalDelete}
         onOk={deleteCatalog}
         onCancel={() => setIsModalDelete(false)}
