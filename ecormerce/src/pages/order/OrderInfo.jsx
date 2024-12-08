@@ -7,6 +7,7 @@ import { openNotification } from "../catalog/CatalogConf";
 function OrderInfo() {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
+  console.log("🚀 ~ OrderInfo ~ order:", order);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const [shipper, setShipper] = useState([]);
