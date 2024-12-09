@@ -161,7 +161,7 @@ function Cart() {
         <Select
           value={method} // Controlled selected value
           onChange={(value) => setMethod(value)}
-          className="w-[300px]"
+          className="w-[300px] hidden"
         >
           <Select.Option value="CASH">Thanh toán khi nhận hàng</Select.Option>
           <Select.Option value="BANKING">Thanh toán Momo</Select.Option>

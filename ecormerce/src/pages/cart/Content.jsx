@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import vnApi from "../../apis/vnApi";
+import { Tooltip } from "antd";
 
 const Content = ({ setUserInformation, items, method, totalSelectedPrice }) => {
   const [provinces, setProvinces] = useState([]);
@@ -68,7 +69,17 @@ const Content = ({ setUserInformation, items, method, totalSelectedPrice }) => {
       </div>
       {items.map((item) => (
         <div key={item.id} className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-          <p>{item.product.name}</p>
+          <Tooltip placement="top" title={item.product.name}>
+            <p
+              style={{
+                textWrap: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {item.product.name}
+            </p>
+          </Tooltip>
           <p>{item.quantity}</p>
           <p>{item.color}</p>
           <p>{item.size}</p>

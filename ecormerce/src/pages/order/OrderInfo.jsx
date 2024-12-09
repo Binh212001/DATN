@@ -43,6 +43,12 @@ function OrderInfo() {
         `/api/invoices/invoice/${id}/transfer/${shipperSelected}/status/${status}`
       );
       setOrder((prevOrder) => ({ ...prevOrder, status }));
+      if (status === "COMPLETED") {
+        openNotification("Đơn hàng đã giao xong.");
+      }
+      if (status === "RETURNED") {
+        openNotification("Đơn hàng đã trả về.");
+      }
     } catch (err) {
       console.error(err);
     }

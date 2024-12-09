@@ -1,5 +1,16 @@
 import { SearchOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Select, Space, Table, Upload } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Space,
+  Table,
+  Upload,
+} from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import { useDispatch, useSelector } from "react-redux";
@@ -190,7 +201,9 @@ function Product() {
           "Content-Type": "multipart/form-data",
         },
       });
+
       setIsModalVisible(false);
+      openNotification("Thêm sản phẩm thành thành công");
       form.resetFields();
     } catch (error) {
       openNotification("Vui lòng đăng nhập đầy dủ thông tin.");
@@ -263,10 +276,11 @@ function Product() {
         <Button onClick={showModal}>Thêm sản phẩm</Button>
       </div>
       <Modal
-        title="Add New Product"
+        title="Thêm sản phẩm"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
+        width={1000}
       >
         <Form form={form} onFinish={handleFinish} layout="vertical">
           <Form.Item label="Tên" name="name" rules={[{ required: true }]}>
@@ -279,30 +293,39 @@ function Product() {
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item label="Giá" name="price" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Số lượng"
-            name="quantity"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
+          <Row gutter={20}>
+            <Col span={8}>
+              <Form.Item label="Giá" name="price" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label="Số lượng"
+                name="quantity"
+                rules={[{ required: true }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label="Giới tính"
+                name="gender"
+                rules={[{ required: true }]}
+              >
+                <Select>
+                  <Select.Option value={true}>Nam</Select.Option>
+                  <Select.Option value={false}>Nữ</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Form.Item label="Giảm giá" name="salePercentage">
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="Giới tính"
-            name="gender"
-            rules={[{ required: true }]}
-          >
-            <Select>
-              <Select.Option value={true}>Nam</Select.Option>
-              <Select.Option value={false}>Nữ</Select.Option>
-            </Select>
-          </Form.Item>
           <Form.Item label="Loại" name="category" rules={[{ required: true }]}>
             <Select>
               {catalog.map((c) => (
@@ -315,7 +338,13 @@ function Product() {
           <Form.Item label="Màu sắc" name="colors" rules={[{ required: true }]}>
             <Select mode="multiple">
               {colors.map((c) => (
-                <Select.Option key={c.id} value={c.id}>
+                <Select.Option
+                  key={c.id}
+                  value={c.id}
+                  style={{
+                    backgroundColor: c.name,
+                  }}
+                >
                   {c.name}
                 </Select.Option>
               ))}
