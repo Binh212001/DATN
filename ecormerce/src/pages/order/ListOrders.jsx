@@ -109,13 +109,37 @@ const ListOrders = () => {
       key: "phone",
     },
     {
+      title: "Người giao hàng",
+      dataIndex: "shipper",
+      key: "shipper",
+      render: (shipper) => shipper?.fullName || "N/A",
+    },
+
+    {
       title: "Tổng",
       dataIndex: "totalAmount",
       key: "totalAmount",
       render: (totalAmount) => `$${totalAmount.toFixed(2)}`,
     },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+    },
   ];
 
+  const shareOrder = async () => {
+    try {
+      const res = await BaseApi.post("api/invoices/auto-share-invoice");
+      console.log("🚀 ~ shareOrder ~ res:", res);
+      if (res.status === 200) {
+        alert("Chia đơn hàng thành công!");
+        window.location.reload();
+      }
+    } catch (error) {
+      alert("Chia đơn hàng thất bại!");
+    }
+  };
   return (
     <div className="container mx-auto p-6">
       {/* Tìm kiếm và Lọc */}
@@ -147,6 +171,7 @@ const ListOrders = () => {
         <Button onClick={reset} type="danger">
           Đặt lại
         </Button>
+        <Button onClick={() => shareOrder()}>Chia đơn cho ship</Button>
       </div>
 
       {/* Bảng danh sách đơn hàng */}

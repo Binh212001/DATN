@@ -80,4 +80,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAll(Specification<Product> spec, Pageable pageable);
     List<Product> findTop10ByOrderBySoldDesc();
+
+    List<Product> findByStatus(boolean b);
 }

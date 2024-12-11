@@ -33,6 +33,7 @@ function ProductDetail() {
     formData.append("gender", values.gender);
     formData.append("quantity", values.quantity);
     formData.append("price", values.price);
+    formData.append("gender", values.gender);
     formData.append("category", values.category);
     values.colors.forEach((colorId) => formData.append("colors", colorId));
     values.sizes.forEach((sizeId) => formData.append("sizes", sizeId));
@@ -75,6 +76,7 @@ function ProductDetail() {
           throw new Error("Không tìm thấy");
         }
         setProduct(data);
+
         form.setFieldsValue({
           name: data.name,
           id: data.id,
@@ -177,7 +179,7 @@ function ProductDetail() {
               name="gender"
               rules={[{ required: true }]}
             >
-              <Select>
+              <Select disabled={!update}>
                 <Select.Option value={true}>Nam</Select.Option>
                 <Select.Option value={false}>Nữ</Select.Option>
               </Select>

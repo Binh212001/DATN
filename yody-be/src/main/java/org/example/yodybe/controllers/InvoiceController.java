@@ -109,4 +109,9 @@ public class InvoiceController {
             return ResponseEntity.status(500).body(new BaseResponse("Internal server error", null, 500));
         }
     }
+
+    @PostMapping("/auto-share-invoice")
+    public ResponseEntity<BaseResponse> autoShareInvoice() {
+        return ResponseEntity.ok(invoiceService.autoShare());
+    }
 }

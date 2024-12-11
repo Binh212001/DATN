@@ -31,4 +31,6 @@ public interface InvoiceService {
     InvoiceDto updateInvoiceDetails(Long id, InvoiceDto updatedDetails);
 
     public List<Invoice> filterInvoices(String receiver, InvoiceStatus status);
+
+    BaseResponse autoShare();
 }

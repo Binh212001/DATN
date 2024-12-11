@@ -29,4 +29,6 @@ public class ProductDto implements Serializable {
     private List<Color> colors;
     private List<Size> sizes;
     private Integer salePercentage;
+    private Boolean gender;
+
 }

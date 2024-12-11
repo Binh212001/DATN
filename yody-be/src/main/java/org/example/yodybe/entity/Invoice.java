@@ -30,7 +30,7 @@ public class Invoice {
     @Nullable
     @ManyToOne
     private User shipper;
-    @ManyToMany
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<Cart> invoiceItems;
     @Enumerated(EnumType.STRING)
     private Payment payment;

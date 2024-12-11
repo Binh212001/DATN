@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -216,6 +217,25 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
         else {
             return invoiceRepository.findAll();
+        }
+    }
+
+    @Override
+    public BaseResponse autoShare() {
+        try {
+            List<Invoice> invoices = invoiceRepository.findByStatus(InvoiceStatus.PENDING);
+            for (Invoice inv : invoices) {
+                List<User> shippers = userRepository.findByRoleAndDistrict(Role.SHIPPER, inv.getDistrict());
+                Random random = new Random();
+                int randomNumber = random.nextInt(shippers.toArray().length);
+                User shipper = shippers.get(randomNumber);
+                inv.setShipper(shipper);
+                inv.setStatus(InvoiceStatus.DELIVERED);
+                invoiceRepository.save(inv);
+            }
+            return new BaseResponse("Auto share successful", true, 200);
+        } catch (Exception e) {
+            return new BaseResponse("Auto share failed", true, 500);
         }
     }
 }

@@ -104,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public BaseResponse getProductList() {
         try {
-            List<Product> res = productRepository.findAll();
+            List<Product> res = productRepository.findByStatus(true);
             return new BaseResponse("Product list", res, 200);
         } catch (Exception e) {
             return new BaseResponse("Error saving product list",null, 500);
@@ -125,6 +125,7 @@ public class ProductServiceImpl implements ProductService {
                 .images(product.getImages())
                 .colors(product.getColors())
                 .sizes(product.getSizes())
+                .gender(product.getGender())
                 .build();
     }
 
