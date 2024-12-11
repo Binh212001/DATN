@@ -84,7 +84,7 @@ function Home() {
 
       <div className="sale ">
         <h4 className="text-center text-main font-bold text-xl m-3">
-          Sản phẩm mới
+          {/* Sản phẩm mới */}
         </h4>
         <Row gutter={[24, 24]}>
           <Row gutter={[24, 24]}>

@@ -47,7 +47,12 @@ const PaymentConfirm = ({ items, method, totalSelectedPrice, modal }) => {
   // Render custom modal
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-11/12 max-w-lg shadow-lg">
+      <div
+        className="bg-white p-6 rounded-lg shadow-lg"
+        style={{
+          width: "1000px",
+        }}
+      >
         <div className="modal-header mb-4">
           <h3 className="text-xl font-semibold">Xác nhận thanh toán</h3>
         </div>

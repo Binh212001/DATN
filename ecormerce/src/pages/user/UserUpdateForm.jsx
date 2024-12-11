@@ -108,7 +108,7 @@ const UserUpdateForm = () => {
   };
 
   return (
-    <div className=" container  h-screen  flex flex-col justify-center">
+    <div className=" container  h-screen  flex flex-col justify-center m-auto">
       <form
         onSubmit={handleSubmit}
         className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-md"
