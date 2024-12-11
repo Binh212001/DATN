@@ -38,9 +38,9 @@ function ProductCard({ xs, sm, md, lg, xl, xxl, item }) {
             </span>
             <span className="text-gray-500 font-bold">200 đã bán</span>
           </div>
-          <span className="absolute bg-red-700 text-white font-bold top-2 right-2 px-1 rounded-full">
+          {/* <span className="absolute bg-red-700 text-white font-bold top-2 right-2 px-1 rounded-full">
             {item.salePercentage}
-          </span>
+          </span> */}
         </Card>
       </Link>
     </Col>

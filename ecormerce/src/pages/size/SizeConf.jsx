@@ -91,7 +91,7 @@ function SizeConf() {
         onCancel={() => setIsModalDelete(false)}
       ></Modal>
       <Modal
-        title={`${mode ? "Tạo size" : "Cập nhật size"}`}
+        title={`${mode ? "Tạo kích cỡ" : "Cập nhật kích cỡ"}`}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
