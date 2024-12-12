@@ -158,11 +158,11 @@ const ListOrders = () => {
           placeholder="Lọc theo trạng thái"
         >
           <Select.Option value="">Tất cả</Select.Option>
-          <Select.Option value="PENDING">Hoàn thành</Select.Option>
-          <Select.Option value="CANCELLED">Đang chờ</Select.Option>
-          <Select.Option value="DELIVERED">Đã giao</Select.Option>
-          <Select.Option value="RETURNED">Đã giao</Select.Option>
-          <Select.Option value="COMPLETED">Đã giao</Select.Option>
+          <Select.Option value="PENDING">Đang chờ</Select.Option>
+          <Select.Option value="CANCELLED">Hủy bỏ</Select.Option>
+          <Select.Option value="DELIVERED">Đang vận chuyển</Select.Option>
+          <Select.Option value="RETURNED">Trả về</Select.Option>
+          <Select.Option value="COMPLETED">Hoàn thành</Select.Option>
         </Select>
 
         <Button type="primary" onClick={() => filterInv()}>
